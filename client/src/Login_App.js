@@ -5,9 +5,18 @@ import App from './App';
 import Login from './login/Login';
 import Navbar from './Navbar/Navbar';
 import Signed from './Signed/Signed';
-import { Sign } from '@tensorflow/tfjs';
+//import ProtectedRoute from './ProtectedRoute';
+// const ProtectedRoute = ({ user, children }) => {
+//   console.log(user);
+//   if (!user) {
+//     return <Navigate to="/" replace />;
+//   }
 
-const ProtectedRoute = ({ user, children }) => {
+//   return children;
+// };
+
+const ProtectedRoute = ({ children }) => {
+  const user = JSON.parse(localStorage.getItem('profile'));
   if (!user) {
     return <Navigate to="/" replace />;
   }
@@ -16,23 +25,24 @@ const ProtectedRoute = ({ user, children }) => {
 };
 
 const Login_App = () => {
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem('profile')));
+  //const [user, setUser] = useState(JSON.parse(localStorage.getItem('profile')));
 
   return (
   <BrowserRouter>
-    <Container style={{backgroundColor:'#F8F5F2'}} maxWidth="lg">
+    <Container style={{backgroundColor:'#F8F5F2', width:'100%'}} maxWidth= "none">
       <Navbar />
       <Routes>
         <Route exact path="/" element={<Login/>} />
         <Route exact path="/signed" element={
-            <ProtectedRoute user={user}>
+            // <ProtectedRoute user={user}>
+            <ProtectedRoute>
               <Signed />
             </ProtectedRoute>
             }
         />
             {/* element={<Signed/>} /> */}
         <Route exact path="/App" element={
-          <ProtectedRoute user={user}>
+          <ProtectedRoute>
             <App />
           </ProtectedRoute>
         
