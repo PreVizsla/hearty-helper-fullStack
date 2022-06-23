@@ -19,13 +19,17 @@ import Session from '../models/session.js';
 export const create = async (req, res) => {
     const { id } = req.body;
 
+    console.log(id);
     try {
         const hashedSession = await bcrypt.hash(id, 12);
-
+        
+        console.log("a");
+        
         const result = await Session.create({ id : hashedSession});
+        console.log("a1");
 
         const  token = jwt.sign({id: result.id}, 'test', {expiresIn: "1h"});
-        
+        console.log("a2");
         res.status(200).json({ result: result, token });
     } catch (error){
         res.status(500).json({ message: "Something went wrong" });
