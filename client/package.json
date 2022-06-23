@@ -1,0 +1,92 @@
+{
+  "name": "hearty-helper",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@emotion/react": "^11.9.3",
+    "@emotion/styled": "^11.9.3",
+    "@foobar404/wave": "^1.2.7",
+    "@material-ui/core": "^4.12.4",
+    "@material-ui/icons": "^4.11.3",
+    "@mohayonao/web-audio-api-shim": "^0.3.0",
+    "@mui/material": "^5.8.5",
+    "@mui/styles": "^5.8.4",
+    "@tensorflow/tfjs": "^2.7.0",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "all": "^0.0.0",
+    "apexcharts": "^3.30.0",
+    "audio-buffer-from": "^1.1.1",
+    "audiobuffer-to-wav": "^1.0.0",
+    "axios": "^0.27.2",
+    "bootstrap": "^4.5.3",
+    "chart.js": "^3.6.0",
+    "concatenateblobs": "^1.0.2",
+    "discrete-wavelets": "^5.0.13",
+    "jspdf": "^2.4.0",
+    "jwt-decode": "^3.1.2",
+    "material-ui": "^0.20.2",
+    "mathjs": "^10.0.0",
+    "react": "^17.0.1",
+    "react-apexcharts": "^1.3.9",
+    "react-bootstrap": "^1.4.0",
+    "react-chartjs-2": "^3.3.0",
+    "react-csv": "^2.0.3",
+    "react-dom": "^17.0.1",
+    "react-fullscreen-loading": "^0.0.4",
+    "react-html-parser": "^2.0.2",
+    "react-loading": "^2.0.3",
+    "react-native-share": "^7.3.7",
+    "react-redux": "^8.0.2",
+    "react-router-dom": "^6.3.0",
+    "react-scripts": "4.0.1",
+    "recorder-js": "^1.0.7",
+    "redux": "^4.2.0",
+    "redux-thunk": "^2.4.1",
+    "stft": "^0.0.0",
+    "wave-resampler": "^1.0.0",
+    "wavebell": "^0.1.6",
+    "web-vitals": "^0.2.4",
+    "workbox-background-sync": "^5.1.3",
+    "workbox-broadcast-update": "^5.1.3",
+    "workbox-cacheable-response": "^5.1.3",
+    "workbox-core": "^5.1.3",
+    "workbox-expiration": "^5.1.3",
+    "workbox-google-analytics": "^5.1.3",
+    "workbox-navigation-preload": "^5.1.3",
+    "workbox-precaching": "^5.1.3",
+    "workbox-range-requests": "^5.1.3",
+    "workbox-routing": "^5.1.3",
+    "workbox-strategies": "^5.1.3",
+    "workbox-streams": "^5.1.3"
+  },
+  "scripts": {
+    "start": "set HTTPS=true&&set SSL_CRT_FILE=./.cert/cert.pem&&set SSL_KEY_FILE=./.cert/key.pem&&react-scripts start",
+    "run": "react-scripts start",
+    "build": "set HTTPS=true&&set SSL_CRT_FILE=./.cert/cert.pem&&set SSL_KEY_FILE=./.cert/key.pem&&set \"GENERATE_SOURCEMAP=false\"&&react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "homepage": ".",
+  "devDependencies": {
+    "webpack-cli": "^4.9.2"
+  }
+}
