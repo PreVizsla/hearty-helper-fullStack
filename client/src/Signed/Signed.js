@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import useStyles from './styles';
 import  {create} from '../actions/session'
 
-const initialState = { id: ''};
+const initialState = { sid: ''};
 
 const Signed =() => {
     const classes = useStyles();
@@ -18,10 +18,9 @@ const Signed =() => {
 
  
     const handleSubmit = (e)=>{
-        console.log(JSON.stringify(formData));
+        console.log("aaaa "+JSON.stringify(formData));
         e.preventDefault();
         dispatch(create(formData, navigate));
- 
     };
 
     const handleChange =(e)=>{
@@ -35,7 +34,7 @@ const Signed =() => {
             <Paper className = {classes.paper} elevation={3}>
                 <form  onSubmit ={handleSubmit}>
                     <TextField 
-                    name="id"
+                    name="sid"
                     onChange={handleChange}
                     variant="outlined"
                     required
