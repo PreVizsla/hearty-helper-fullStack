@@ -16,11 +16,10 @@ const auth = async (req, res, next) => {
         if(token && isCustomAuth){
             //token and secret
             decodedData = jwt.verify(token, 'test');
-
             req.userId = decodedData ?.id;
         
         } else{
-            //using gogoel Auth function
+            //using google Auth function
             decodedData = jwt.decode(token);
             req.userId = decodedData ?.sub;
 
