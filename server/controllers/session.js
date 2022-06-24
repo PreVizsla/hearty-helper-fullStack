@@ -23,7 +23,7 @@ export const create = async (req, res) => {
     try {
         const hashedSession = await bcrypt.hash(sid, 12);
         
-        console.log("a");
+        //console.log("a");
         
         const result = await Session.create({ sid : hashedSession});
         //console.log("a1");
