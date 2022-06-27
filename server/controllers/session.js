@@ -25,12 +25,12 @@ export const create = async (req, res) => {
         
         //console.log("a");
         
-        const result = await Session.create({ sid : hashedSession});
+        const session_result = await Session.create({ sid : hashedSession});
         //console.log("a1");
 
-        const  token = jwt.sign({sid: result.sid}, 'test', {expiresIn: "1h"});
+        const  token = jwt.sign({sid: session_result.sid}, 'test', {expiresIn: "20s"});
         //console.log("a2");
-        res.status(200).json({ result: result, token });
+        res.status(200).json({ result: session_result, token });
     } catch (error){
         console.error(error.response.data);
         console.error(sid);

@@ -7,7 +7,7 @@ const sessionReducer = (state = {sessionData: null}, action) => {
         case actionType.CREATE:
             console.log(action?.data);
             //saving the id in local storage
-            localStorage.setItem('profile', JSON.stringify({ ...action?.data }));
+            localStorage.setItem('session', JSON.stringify({ ...action?.data }));
 
             return { ...state, authData: action.data, loading: false, errors: null };
         default:
