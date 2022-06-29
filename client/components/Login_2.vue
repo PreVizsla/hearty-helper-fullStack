@@ -1,14 +1,4 @@
 <template>
-  <div>
-    <div>
-      <h1>yo</h1>
-      <div>
-    <!-- Reminder to bind the icon property with ":" -->
-    <font-awesome-icon :icon="['fas', 'user-secret']" />
-
-    <NuxtWelcome />
-  </div>
-    </div>
   <div class="login">
     <el-card>
       <h2>Login</h2>
@@ -17,13 +7,11 @@
         :model="model"
         :rules="rules"
         ref="form"
+        @submit.prevent="login"
       >
 
         <el-form-item prop="username">
-          <el-input v-model="model.username" placeholder="Username" 
-          prefix-icon="fas fa-user">
-            <i class="fas fa-user fa-lg"></i> 
-          </el-input>
+          <el-input v-model="model.username" placeholder="Username" prefix-icon="fas fa-user"></el-input>
         </el-form-item>
 
         <el-form-item prop="password">
@@ -40,7 +28,7 @@
             :loading="loading"
             class="login-button"
             type="primary"
-            @click="onSubmit"
+            native-type="submit"
             block
           >Login</el-button>
         </el-form-item>
@@ -50,16 +38,11 @@
       </el-form>
     </el-card>
   </div>
-
-  </div>
-
 </template>
 
 <script>
-
 export default {
   name: "login",
-
   data() {
     return {
       validCredentials: {
@@ -96,16 +79,11 @@ export default {
     };
   },
   methods: {
-    onSubmit(){
-      console.log("yoo");
-    },
-    
     simulateLogin() {
       return new Promise(resolve => {
         setTimeout(resolve, 800);
       });
     },
-
     async login() {
       console.log("yoi");
       let valid = await this.$refs.form.validate();
