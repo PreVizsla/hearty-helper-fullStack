@@ -3,7 +3,7 @@
     <div>
       <h1>yo</h1>
       <div>
-    <!-- Reminder to bind the icon property with ":" -->
+    <!-- font awesome icon not working -->
     <font-awesome-icon :icon="['fas', 'user-secret']" />
 
     <NuxtWelcome />
@@ -18,7 +18,8 @@
         :rules="rules"
         ref="form"
       >
-
+        <!-- prefix icon not working, followed this guideline -->
+        <!-- https://fontawesome.com/docs/web/use-with/vue/use-with -->
         <el-form-item prop="username">
           <el-input v-model="model.username" placeholder="Username" 
           prefix-icon="fas fa-user">
@@ -44,7 +45,7 @@
             block
           >Login</el-button>
         </el-form-item>
-
+        <!-- just a dummy link -->
         <a class="forgot-password" href="https://oxfordinformatics.com/">Forgot password ?</a>
 
       </el-form>
