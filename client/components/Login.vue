@@ -1,15 +1,17 @@
 <template>
   <div>
+
     <div>
       <h1>yo</h1>
       <div>
-    <!-- font awesome icon not working -->
-    <font-awesome-icon :icon="['fas', 'user-secret']" />
+        <!-- font awesome icon not working -->
+        <font-awesome-icon :icon="['fas', 'user-secret']" />
 
-    <NuxtWelcome />
-  </div>
+<!--        <NuxtWelcome />-->
+      </div>
     </div>
-  <div class="login">
+
+    <div class="login">
     <el-card>
       <h2>Login</h2>
       <el-form
@@ -22,9 +24,9 @@
         <!-- https://fontawesome.com/docs/web/use-with/vue/use-with -->
         <!-- added fontawesome plugins too -->
         <el-form-item prop="username">
-          <el-input v-model="model.username" placeholder="Username" 
+          <el-input v-model="model.username" placeholder="Username"
           prefix-icon="fas fa-user">
-            <i class="fas fa-user fa-lg"></i> 
+            <i class="fas fa-user fa-lg"></i>
           </el-input>
         </el-form-item>
 
@@ -101,7 +103,7 @@ export default {
     onSubmit(){
       console.log("yoo");
     },
-    
+
     simulateLogin() {
       return new Promise(resolve => {
         setTimeout(resolve, 800);
