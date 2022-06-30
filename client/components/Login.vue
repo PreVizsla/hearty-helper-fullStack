@@ -20,6 +20,7 @@
       >
         <!-- prefix icon not working, followed this guideline -->
         <!-- https://fontawesome.com/docs/web/use-with/vue/use-with -->
+        <!-- added fontawesome plugins too -->
         <el-form-item prop="username">
           <el-input v-model="model.username" placeholder="Username" 
           prefix-icon="fas fa-user">
