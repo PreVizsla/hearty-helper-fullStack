@@ -53,7 +53,6 @@
 
         <el-form-item>
           <el-button
-            
             class="login-button"
             type="primary"
             @click="onSubmit({ firstName, lastname, email, password, confirmPassword })"
@@ -117,6 +116,8 @@ export default {
   },
   methods: {
     async onSubmit(user){
+      console.log(user);
+      console.log(user.firstName);
       await this.$axios.post("http://localhost:5000/user/signup", {
           firstName: user.firstName,
           lastname: user.lastname,
@@ -124,7 +125,14 @@ export default {
           password: user.password,
           confirmPassword: user.confirmPassword,
         });
+      
     },
+    // resetUser(user) {
+    //   this.$store.commit("user/setId", user.id);
+    //   this.$store.commit("user/setName", user.name);
+    //   this.$store.commit("user/setEmail", user.email);
+    //   this.$store.commit("user/setPassword", user.password);
+    // },
   }
 
     
