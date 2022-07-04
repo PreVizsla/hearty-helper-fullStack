@@ -157,6 +157,11 @@ export default {
           password: user.password,
           confirmPassword: user.confirmPassword,
         });
+      await this.$auth.loginWith('local',{
+          data:user
+      })
+      localStorage.setItem('profile', JSON.stringify({user}));
+      this.$router.push('/Dashboard')
     },
     async onSubmitLogIn(user){
       await this.$axios.post("http://localhost:5000/user/signin", {
@@ -166,6 +171,20 @@ export default {
           password: user.password,
           confirmPassword: user.confirmPassword,
         });
+      await this.$auth.loginWith('local',{
+        data: user
+      });
+      const acc = await this.$axios.post("http://localhost:5000/user/user",
+      {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        password: user.password,
+        confirmPassword: user.confirmPassword,
+      })
+      // localStorage.setItem('profile', JSON.stringify({acc}));
+      localStorage.setItem('profile', JSON.stringify(acc));
+      this.$router.push('/Dashboard')
     },
 
     // resetUser(user) {

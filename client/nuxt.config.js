@@ -39,7 +39,53 @@ export default {
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     "@nuxtjs/axios",
+    '@nuxtjs/auth-next',
+
   ],
+  auth:{
+    strategies: {
+      local: {
+        token: {
+          property: 'token',
+          global: true,
+          // required: true,
+          // type: 'Bearer'
+        },
+        user: {
+          property: 'user',
+          // autoFetch: true
+        },
+        endpoints: {
+          login: { url: 'http://localhost:5000/user/signin', method: 'post', propertyName: 'token' },
+          logout: { url: '/api/auth/logout', method: 'post' },
+          user: false,
+        },
+        tokenType: ''
+      }
+    },
+    redirect:{
+      login:'/login',
+      logout: '/dashboard',
+      callback: '/login',
+      home: '/dashboard'
+    },
+    watchLoggedIn:{
+      Default: true
+    },
+    rewriteRedirects:{
+      Deafult: true
+    }
+  },
+  router:{
+    middleware: ['auth'],
+    extendRoutes(routes, resolve) {
+      routes.push({
+        name: 'custom',
+        path: '*',
+        component: resolve(__dirname, 'pages/Dashboard.vue')
+      })
+    }
+  },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {

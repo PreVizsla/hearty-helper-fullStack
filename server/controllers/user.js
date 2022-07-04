@@ -5,7 +5,7 @@ import User from '../models/user.js';
 
 export const signin = async (req, res) => {
     const { email, password } = req.body;
-    console.log(email);
+    console.log(req.body);
     try {
         console.log("Log In initiating");
         const existingUser = await User.findOne({ email });
@@ -24,6 +24,19 @@ export const signin = async (req, res) => {
     }
 }
 
+
+export const signedin = async (req, res) => {
+    const {email, password} = req.body;
+    console.log(req.body);
+    try {
+        console.log("fetching user");
+        const existingUser = await User.findOne({ email });
+        console.log(existingUser);
+        res.status(200).json(existingUser);
+    } catch (error){
+        res.status(500).json({ message: "Something went wrong" });
+    }
+}
 
 export const signup = async (req, res) => {
     

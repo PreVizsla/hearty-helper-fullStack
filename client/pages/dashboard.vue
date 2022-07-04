@@ -133,11 +133,12 @@
 
 <script>
 export default {
+  
   name: "dashboard",
   data() {
     return {
       fullscreenLoading: false,
-      username: 'aFakeUsername',
+      username: 'a',
       activeName: 'first',
       sessionDurMin: 30,
       sessionDurMax: 600,
@@ -188,6 +189,10 @@ export default {
         sessionEndTime: '2022-7-1 | 0:30:30',
       }
     };
+  },
+  mounted(){
+    const username = JSON.parse(localStorage.getItem("profile")).data.name;
+    console.log(username);
   },
   methods: {
     handleClick(tab, event) {
