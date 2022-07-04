@@ -2,7 +2,8 @@
   <div>
     <div class="login">
     <el-card>
-      <h2>Sign Up</h2>
+      <h2 v-if="isSignup">Sign Up</h2>
+      <h2 v-else>Log In</h2>
       <el-form
         class="login-form"
         ref="form"
@@ -10,15 +11,17 @@
         <!-- prefix icon not working, followed this guideline -->
         <!-- https://fontawesome.com/docs/web/use-with/vue/use-with -->
         <!-- added fontawesome plugins too -->
-        <el-form-item prop="firstName">
+        
+
+        <el-form-item v-if="isSignup" prop="firstName">
           <el-input v-model="firstName" placeholder="First Name"
           prefix-icon="el-icon-user">
           </el-input>
         </el-form-item>
 
-        <el-form-item prop="lastname">
+        <el-form-item v-if="isSignup" prop="lastName">
           <el-input
-            v-model="lastname"
+            v-model="lastName"
             placeholder="Last Name"
             prefix-icon="el-icon-user"
           ></el-input>
@@ -42,7 +45,7 @@
           ></el-input>
         </el-form-item>
 
-        <el-form-item prop="confirmPassword">
+        <el-form-item v-if="isSignup" prop="confirmPassword">
           <el-input
             v-model="confirmPassword"
             placeholder="Password Confirmation"
@@ -51,27 +54,53 @@
           ></el-input>
         </el-form-item>
 
-        <el-form-item>
+        <!-- for sign up button -->
+        <el-form-item v-if="isSignup">
           <el-button
             class="login-button"
             type="primary"
-            @click="onSubmit({ firstName, lastname, email, password, confirmPassword })"
+            @click="onSubmit({ firstName, lastName, email, password, confirmPassword })"
+            block
+          >Sign Up</el-button>
+        </el-form-item>
+
+        <!-- for login button -->
+        <el-form-item v-else>
+          <el-button
+            class="login-button"
+            type="primary"
+            @click="onSubmitLogIn({ firstName, lastName, email, password, confirmPassword })"
             block
           >Login</el-button>
         </el-form-item>
       </el-form>
+
+      <!-- switching button -->
+      <el-button v-if="isSignup"
+      type="primary"
+      @click="setIsSignup">
+        Already have an account? Sign In
+      </el-button>
+
+      <el-button v-else
+      type="primary"
+      @click="setIsSignup">
+        Don't have an account? Sign Up
+      </el-button>
     </el-card>
   </div>
 
   </div>
-
 </template>
 
 <script>
-
 export default {
   name: "login",
-
+  data(){
+    return{
+      isSignup: false
+    }
+  },
   computed: {
     firstName: {
       get() {
@@ -81,9 +110,9 @@ export default {
         this.$store.commit("user/setfirstName", value);
       },
     },
-    lastname: {
+    lastName: {
       get() {
-        return this.$store.state.user.lastname;
+        return this.$store.state.user.lastName;
       },
       set(value) {
         this.$store.commit("user/setlastName", value);
@@ -115,18 +144,30 @@ export default {
     },    
   },
   methods: {
+    setIsSignup(){
+      this.isSignup = !this.isSignup
+    },
     async onSubmit(user){
       console.log(user);
       console.log(user.firstName);
       await this.$axios.post("http://localhost:5000/user/signup", {
           firstName: user.firstName,
-          lastname: user.lastname,
+          lastName: user.lastName,
           email: user.email,
           password: user.password,
           confirmPassword: user.confirmPassword,
         });
-      
     },
+    async onSubmitLogIn(user){
+      await this.$axios.post("http://localhost:5000/user/signin", {
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          password: user.password,
+          confirmPassword: user.confirmPassword,
+        });
+    },
+
     // resetUser(user) {
     //   this.$store.commit("user/setId", user.id);
     //   this.$store.commit("user/setName", user.name);

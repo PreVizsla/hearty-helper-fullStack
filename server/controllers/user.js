@@ -7,6 +7,7 @@ export const signin = async (req, res) => {
     const { email, password } = req.body;
     console.log(email);
     try {
+        console.log("Log In initiating");
         const existingUser = await User.findOne({ email });
 
         if(!existingUser) return res.status(404).json({ message: "User doesn't exist"});
@@ -16,7 +17,7 @@ export const signin = async (req, res) => {
         //secret (test)
         const token = jwt.sign({ email: existingUser.email, id: existingUser._id }, 'test', { expiresIn: "1h"});
 
-        //console.log("AAAAAA");
+        console.log("Log In successful");
         res.status(200).json({ result: existingUser, token });
     } catch (error){
         res.status(500).json({ message: "Something went wrong" });
@@ -29,7 +30,7 @@ export const signup = async (req, res) => {
     const {email, password, confirmPassword, firstName, lastName} = req.body;
 
     try {
-        console.log("yes");
+        console.log("sign up initiating");
         const existingUser = await User.findOne({ email });
 
         if(existingUser) return res.status(400).json({ message: "User already exists"});
@@ -44,6 +45,7 @@ export const signup = async (req, res) => {
         
 
         res.status(200).json({ result: result, token });
+        console.log("sign up successful");
     } catch (error){
         res.status(500).json({ message: "Something went wrong" });
     }

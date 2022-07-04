@@ -1,6 +1,6 @@
 export const state = () => ({
     firstName: '', 
-    lastname: '', 
+    lastName: '', 
     email: '', 
     password: '', 
     confirmPassword:''
@@ -11,7 +11,7 @@ export const mutations = {
         state.firstName = data
     },
     setlastName: (state, data) => {
-        state.lastname = data
+        state.lastName = data
     },
     setEmail: (state, data) => {
         state.email = data
