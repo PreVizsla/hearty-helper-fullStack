@@ -1,56 +1,64 @@
 <template>
   <div>
-
-    <div>
-      <h1>yo</h1>
-      <div>
-        <!-- font awesome icon not working -->
-        <font-awesome-icon :icon="['fas', 'user-secret']" />
-
-<!--        <NuxtWelcome />-->
-      </div>
-    </div>
-
     <div class="login">
     <el-card>
-      <h2>Login</h2>
+      <h2>Sign Up</h2>
       <el-form
         class="login-form"
-        :model="model"
-        :rules="rules"
         ref="form"
       >
         <!-- prefix icon not working, followed this guideline -->
         <!-- https://fontawesome.com/docs/web/use-with/vue/use-with -->
         <!-- added fontawesome plugins too -->
-        <el-form-item prop="username">
-          <el-input v-model="model.username" placeholder="Username"
-          prefix-icon="fas fa-user">
-            <i class="fas fa-user fa-lg"></i>
+        <el-form-item prop="firstName">
+          <el-input v-model="firstName" placeholder="First Name"
+          prefix-icon="el-icon-user">
           </el-input>
         </el-form-item>
 
+        <el-form-item prop="lastname">
+          <el-input
+            v-model="lastname"
+            placeholder="Last Name"
+            prefix-icon="el-icon-user"
+          ></el-input>
+        </el-form-item>
+
+        <el-form-item prop="email">
+          <el-input
+            v-model="email"
+            placeholder="email"
+            type="email"
+            prefix-icon="el-icon-message"
+          ></el-input>
+        </el-form-item>
+        
         <el-form-item prop="password">
           <el-input
-            v-model="model.password"
+            v-model="password"
             placeholder="Password"
             type="password"
-            prefix-icon="fas fa-lock"
+            prefix-icon="el-icon-lock"
+          ></el-input>
+        </el-form-item>
+
+        <el-form-item prop="confirmPassword">
+          <el-input
+            v-model="confirmPassword"
+            placeholder="Password Confirmation"
+            type="password"
+            prefix-icon="el-icon-lock"
           ></el-input>
         </el-form-item>
 
         <el-form-item>
           <el-button
-            :loading="loading"
             class="login-button"
             type="primary"
-            @click="onSubmit"
+            @click="onSubmit({ firstName, lastname, email, password, confirmPassword })"
             block
           >Login</el-button>
         </el-form-item>
-        <!-- just a dummy link -->
-        <a class="forgot-password" href="https://oxfordinformatics.com/">Forgot password ?</a>
-
       </el-form>
     </el-card>
   </div>
@@ -64,71 +72,70 @@
 export default {
   name: "login",
 
-  data() {
-    return {
-      validCredentials: {
-        username: "lightscope",
-        password: "lightscope"
+  computed: {
+    firstName: {
+      get() {
+        return this.$store.state.user.firstName;
       },
-      model: {
-        username: "",
-        password: ""
+      set(value) {
+        this.$store.commit("user/setfirstName", value);
       },
-      loading: false,
-      rules: {
-        username: [
-          {
-            required: true,
-            message: "Username is required",
-            trigger: "blur"
-          },
-          {
-            min: 4,
-            message: "Username length should be at least 5 characters",
-            trigger: "blur"
-          }
-        ],
-        password: [
-          { required: true, message: "Password is required", trigger: "blur" },
-          {
-            min: 5,
-            message: "Password length should be at least 5 characters",
-            trigger: "blur"
-          }
-        ]
-      }
-    };
+    },
+    lastname: {
+      get() {
+        return this.$store.state.user.lastname;
+      },
+      set(value) {
+        this.$store.commit("user/setlastName", value);
+      },
+    },
+    email: {
+      get() {
+        return this.$store.state.user.email;
+      },
+      set(value) {
+        this.$store.commit("user/setEmail", value);
+      },
+    },
+    password: {
+      get() {
+        return this.$store.state.user.password;
+      },
+      set(value) {
+        this.$store.commit("user/setPassword", value);
+      },
+    },
+    confirmPassword: {
+      get() {
+        return this.$store.state.user.confirmPassword;
+      },
+      set(value) {
+        this.$store.commit("user/setconfirmPassword", value);
+      },
+    },    
   },
   methods: {
-    onSubmit(){
-      console.log("yoo");
+    async onSubmit(user){
+      console.log(user);
+      console.log(user.firstName);
+      await this.$axios.post("http://localhost:5000/user/signup", {
+          firstName: user.firstName,
+          lastname: user.lastname,
+          email: user.email,
+          password: user.password,
+          confirmPassword: user.confirmPassword,
+        });
+      
     },
-
-    simulateLogin() {
-      return new Promise(resolve => {
-        setTimeout(resolve, 800);
-      });
-    },
-
-    async login() {
-      console.log("yoi");
-      let valid = await this.$refs.form.validate();
-      if (!valid) {
-        return;
-      }
-      this.loading = true;
-      await this.simulateLogin();
-      this.loading = false;
-      if (
-        this.model.username === this.validCredentials.username &&
-        this.model.password === this.validCredentials.password
-      ) {
-        this.$message.success("Login successfull");
-      } else {
-        this.$message.error("Username or password is invalid");
-      }
-    }
+    // resetUser(user) {
+    //   this.$store.commit("user/setId", user.id);
+    //   this.$store.commit("user/setName", user.name);
+    //   this.$store.commit("user/setEmail", user.email);
+    //   this.$store.commit("user/setPassword", user.password);
+    // },
   }
+
+    
 };
 </script>
 
