@@ -5,13 +5,18 @@ import mongoose from 'mongoose';
 const sessionSchema = mongoose.Schema({
     sid: { type: String, required: true },
     id: { type: String },
-    
+
+    duration: {type: Number},
+    // expireAt: {
+    //     type: Date,
+    //     default: Date.now,
+    //     index: {expires: '120s'}
+    // }
+
     expireAt: {
         type: Date,
         default: Date.now,
-        index: {expires: '20s'}
     }
-
 })
 
-export default mongoose.model("Session", sessionSchema);
+export default mongoose.model("Session", sessionSchema);   

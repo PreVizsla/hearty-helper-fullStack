@@ -11,7 +11,7 @@
                 <span><strong>{{username}}</strong></span>
               </div>
               <p>
-                Some user information perhaps or a greeting.
+                Welcome {{username}}
               </p>
             </el-card>
           </el-main>
@@ -73,24 +73,29 @@
         <el-tab-pane label="Create Session" name="third">
           <el-main>
             <el-card class="box-card">
+
+              <!-- submission form -->
               <el-form ref="form" :model="dummyCreationForm" label-width="120px">
                 <el-form-item label="Patient name">
-                  <el-input v-model="dummyCreationForm.patientName"></el-input>
+                  <el-input v-model="patientName"></el-input>
                 </el-form-item>
+
                 <el-form-item label="Instant delivery">
                   <el-slider
-                    v-model="dummyCreationForm.duration"
+                    v-model="duration"
                     :min="sessionDurMin"
                     :max="sessionDurMax"
                     :step="sessionDurStep"
                     show-input>
                   </el-slider>
                 </el-form-item>
+
                 <el-form-item>
-                  <el-button type="primary" @click="onSubmit">Create</el-button>
+                  <el-button type="primary" @click="onSubmit({patientName, duration})">Create</el-button>
                   <el-button>Cancel</el-button>
                 </el-form-item>
               </el-form>
+
             </el-card>
           </el-main>
         </el-tab-pane>
@@ -114,7 +119,7 @@
       :before-close="handleClose">
       <p>The session is successfully created.</p>
       <p>Session ID: {{dummyCreationResult.sessionId}}</p>
-      <p>Session Token: <strong>{{dummyCreationResult.sessionToken}}
+      <p>Session Token: <strong>{{token}}
           <i class="el-icon-copy-document" @click="copyToken"></i></strong></p>
       <p>The session will end at: {{dummyCreationResult.sessionEndTime}}</p>
       <!--TODO: Automatically generate QRcode which contains the app domain + the token for easy access-->
@@ -137,8 +142,10 @@ export default {
   name: "dashboard",
   data() {
     return {
+      username: '',
+      token:'',
+      sessionEndTime:'',
       fullscreenLoading: false,
-      username: 'a',
       activeName: 'first',
       sessionDurMin: 30,
       sessionDurMax: 600,
@@ -190,21 +197,66 @@ export default {
       }
     };
   },
-  mounted(){
-    const username = JSON.parse(localStorage.getItem("profile")).data.name;
-    console.log(username);
+  computed:{
+    patientName:{
+      get() {
+        return this.$store.state.session.patientName;
+      },
+      set(value) {
+        this.$store.commit("session/setpatientName", value);
+      },
+    },
+    duration:{
+      get() {
+        return this.$store.state.session.duration;
+      },
+      set(value) {
+        this.$store.commit("session/setduration", value);
+      },
+    },
+    sid:{
+      get() {
+        return this.$store.state.session.sid;
+      },
+      set(value) {
+        this.$store.commit("session/setsid", value);
+      },
+    }
   },
   methods: {
+    displayName(){
+      this.username = JSON.parse(localStorage.getItem("profile")).data.name;
+    },
     handleClick(tab, event) {
       console.log(tab, event);
     },
-    onSubmit() {
+    async onSubmit(session) {
       console.log('submit, if the session is successfully created, server will return the Session ID + Session Token');
-      console.log(this.dummyCreationForm);
+      // console.log(this.dummyCreationForm);
+      // console.log(Math.floor(Math.random() * Date.now()))
       // TODO set the creation time as NOW
       // TODO send the the request with details to the server
       // TODO if the request is accepted, show the dialog with session IDs and Tokens
-      // TODO fullscreen loading when sending/fetching data from beckend
+      // TODO fullscreen loading when sending/fetching data from backend
+      const currentdate = new Date();
+      //method to get date
+      const hour = Math.floor(session.duration/3600);
+      const minute =  Math.floor((session.duration-hour*3600)/60);
+      const second =  Math.floor((session.duration-hour*3600-minute*60));
+      console.log(hour)
+      console.log("Last Sync: " + currentdate.getDate() + "/"
+                + (currentdate.getMonth()+1)  + "/" 
+                + currentdate.getFullYear() + " "  
+                + (currentdate.getHours()+hour) + ":"  
+                + (currentdate.getMinutes()+minute) + ":" 
+                + (currentdate.getSeconds()+second));
+      this.token = Math.floor(Math.random() * Date.now()).toString();
+      
+      await this.$axios.post("http://localhost:5000/user/create", {
+          patientName: session.patientName,
+          duration: session.duration,
+          sid: this.token,
+        });
 
       this.fullscreenLoading = true;
       setTimeout(() => {
@@ -228,6 +280,11 @@ export default {
         type: 'success'
       });
     }
+  },
+  mounted(){
+    // this.username = JSON.parse(localStorage.getItem("profile")).data.name;
+    // console.log(username);
+    this.displayName();
   },
 }
 </script>

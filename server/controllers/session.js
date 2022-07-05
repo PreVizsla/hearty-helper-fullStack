@@ -17,23 +17,24 @@ import Session from '../models/session.js';
 
 
 export const create = async (req, res) => {
-    const { sid } = req.body;
+    const { sid, duration } = req.body;
 
     console.log(sid);
+    
     try {
-        const hashedSession = await bcrypt.hash(sid, 12);
+        const hashedSession = await bcrypt.hash(sid, 14);
         
-        //console.log("a");
-        
-        const session_result = await Session.create({ sid : hashedSession});
+        // console.log("a");
+        // succeed in setting customized expiry
+        const session_result = await Session.create({ sid : hashedSession, duration: duration, expiresAt: {expires: duration}});
         //console.log("a1");
 
         const  token = jwt.sign({sid: session_result.sid}, 'test', {expiresIn: "20s"});
         //console.log("a2");
         res.status(200).json({ result: session_result, token });
     } catch (error){
-        console.error(error.response.data);
-        console.error(sid);
+        console.error(error);
+        // console.error(sid);
         res.status(500).json({ message: "Something went wrong" });
     }
 }
