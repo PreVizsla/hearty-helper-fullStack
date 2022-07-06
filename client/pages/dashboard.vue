@@ -121,7 +121,7 @@
       <p>Session ID: {{dummyCreationResult.sessionId}}</p>
       <p>Session Token: <strong>{{token}}
           <i class="el-icon-copy-document" @click="copyToken"></i></strong></p>
-      <p>The session will end at: {{dummyCreationResult.sessionEndTime}}</p>
+      <p>The session will end at: {{sessionEndTime}}</p>
       <!--TODO: Automatically generate QRcode which contains the app domain + the token for easy access-->
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="dialogVisible = false">Confirm</el-button>
@@ -144,6 +144,12 @@ export default {
     return {
       username: '',
       token:'',
+      hour:'',
+      minute:'',
+      second:'',
+      year:'',
+      month:'',
+      date:'',
       sessionEndTime:'',
       fullscreenLoading: false,
       activeName: 'first',
@@ -239,17 +245,21 @@ export default {
       // TODO if the request is accepted, show the dialog with session IDs and Tokens
       // TODO fullscreen loading when sending/fetching data from backend
       const currentdate = new Date();
+      console.log(currentdate);
       //method to get date
       const hour = Math.floor(session.duration/3600);
       const minute =  Math.floor((session.duration-hour*3600)/60);
       const second =  Math.floor((session.duration-hour*3600-minute*60));
-      console.log(hour)
-      console.log("Last Sync: " + currentdate.getDate() + "/"
-                + (currentdate.getMonth()+1)  + "/" 
-                + currentdate.getFullYear() + " "  
-                + (currentdate.getHours()+hour) + ":"  
-                + (currentdate.getMinutes()+minute) + ":" 
-                + (currentdate.getSeconds()+second));
+      this.hour = currentdate.getHours() + hour
+      this.minute = currentdate.getMinutes() + minute
+      this.second= currentdate.getSeconds() + second
+      this.date = currentdate.getDate()
+      this.month = currentdate.getMonth()+1
+      this.year = currentdate.getFullYear()
+      this.sessionEndTime = this.year+'-'+this.month+'-'+this.date+' | '+this.hour+':'+this.minute+':'+this.second
+
+      // token generation is based on the milisecond the user create the session * random numbers
+      // probability that 2 event happened in a milisecond is one in
       this.token = Math.floor(Math.random() * Date.now()).toString();
       
       await this.$axios.post("http://localhost:5000/user/create", {

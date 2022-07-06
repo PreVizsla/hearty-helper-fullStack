@@ -1,6 +1,6 @@
 export const state = () => ({
     patientName: '', 
-    duration: '', 
+    duration: 0, 
     sid: '',
 })
 
