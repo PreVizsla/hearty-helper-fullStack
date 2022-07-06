@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <el-container style="height: 100vh">
     <div class="login">
     <el-card>
-      <h2 v-if="isSignup">Sign Up</h2>
-      <h2 v-else>Log In</h2>
+      <h2 v-if="isSignup" style="text-align: center">SIGN UP</h2>
+      <h2 v-else style="text-align: center">LOG IN</h2>
       <el-form
         class="login-form"
         ref="form"
@@ -11,7 +11,7 @@
         <!-- prefix icon not working, followed this guideline -->
         <!-- https://fontawesome.com/docs/web/use-with/vue/use-with -->
         <!-- added fontawesome plugins too -->
-        
+
 
         <el-form-item v-if="isSignup" prop="firstName">
           <el-input v-model="firstName" placeholder="First Name"
@@ -35,7 +35,7 @@
             prefix-icon="el-icon-message"
           ></el-input>
         </el-form-item>
-        
+
         <el-form-item prop="password">
           <el-input
             v-model="password"
@@ -53,6 +53,8 @@
             prefix-icon="el-icon-lock"
           ></el-input>
         </el-form-item>
+
+        <el-form-item class="placeholder"></el-form-item>
 
         <!-- for sign up button -->
         <el-form-item v-if="isSignup">
@@ -73,24 +75,41 @@
             block
           >Login</el-button>
         </el-form-item>
+
+        <el-form-item v-if="isSignup">
+          <el-button class="login-button" type="primary" @click="setIsSignup">
+            Already have an account? Sign In
+          </el-button>
+        </el-form-item>
+
+        <el-form-item v-else>
+          <el-button class="login-button" type="primary" @click="setIsSignup">
+            Don't have an account? Sign Up
+          </el-button>
+        </el-form-item>
+
+
       </el-form>
 
       <!-- switching button -->
-      <el-button v-if="isSignup"
-      type="primary"
-      @click="setIsSignup">
-        Already have an account? Sign In
-      </el-button>
+<!--      <el-button v-if="isSignup"-->
+<!--      type="success"-->
+<!--      @click="setIsSignup">-->
+<!--        Already have an account? Sign In-->
+<!--      </el-button>-->
 
-      <el-button v-else
-      type="primary"
-      @click="setIsSignup">
-        Don't have an account? Sign Up
-      </el-button>
+<!--      <el-button v-else-->
+<!--      type="success"-->
+<!--      @click="setIsSignup">-->
+<!--        Don't have an account? Sign Up-->
+<!--      </el-button>-->
     </el-card>
   </div>
 
-  </div>
+    <el-footer style="position: fixed; bottom: 0; width: 100%; height: 20px; line-height: 20px; z-index: 999; text-align: center; font-size: small; box-shadow: 0px -2px 8px #D0D3D4">
+      Copyright &#169 Ho Lab, HKU
+    </el-footer>
+  </el-container>
 </template>
 
 <script>
@@ -141,7 +160,7 @@ export default {
       set(value) {
         this.$store.commit("user/setconfirmPassword", value);
       },
-    },    
+    },
   },
   methods: {
     setIsSignup(){
@@ -161,7 +180,7 @@ export default {
           data:user
       })
       localStorage.setItem('profile', JSON.stringify({user}));
-      this.$router.push('/Dashboard')
+      this.$router.push('/dashboard')
     },
     async onSubmitLogIn(user){
       await this.$axios.post("http://localhost:5000/user/signin", {
@@ -184,7 +203,7 @@ export default {
       })
       // localStorage.setItem('profile', JSON.stringify({acc}));
       localStorage.setItem('profile', JSON.stringify(acc));
-      this.$router.push('/Dashboard')
+      this.$router.push('/dashboard')
     },
 
     // resetUser(user) {
@@ -195,7 +214,7 @@ export default {
     // },
   }
 
-    
+
 };
 </script>
 
@@ -209,7 +228,6 @@ export default {
 
 .login-button {
   width: 100%;
-  margin-top: 40px;
 }
 .login-form {
   width: 290px;
@@ -218,14 +236,14 @@ export default {
   margin-top: 10px;
 }
 
-.el-button--primary {
-  background: rgb(0, 124, 137);
-  border-color: rgb(0, 124, 137);
+/*.el-button--primary {*/
+/*  background: rgb(0, 124, 137);*/
+/*  border-color: rgb(0, 124, 137);*/
 
-}
-.login .el-input__inner:hover {
-  border-color: rgb(0, 124, 137);
-}
+/*}*/
+/*.login .el-input__inner:hover {*/
+/*  border-color: rgb(0, 124, 137);*/
+/*}*/
 .login .el-input__prefix {
   background: rgb(238, 237, 234);
   left: 0;
