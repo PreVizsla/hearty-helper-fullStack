@@ -8,7 +8,7 @@
           <el-main>
             <el-card class="box-card">
               <div slot="header">
-                <span><strong>{{username}}</strong></span>
+                <span><strong>Hi, {{username}}</strong></span>
               </div>
               <p>
                 Welcome to the dashboard!
@@ -24,12 +24,12 @@
           <el-main>
             <el-card class="box-card">
               <el-table
-                :data="table"
+                :data="historyData"
                 :default-sort = "{prop: 'sessionId', order: 'descending'}"
                 style="width: 100%">
 
                 <el-table-column
-                  prop="ID"
+                  prop="_id"
                   label="Session ID"
                   sortable
                   fixed
@@ -55,7 +55,7 @@
                 </el-table-column>
 
                 <el-table-column
-                  prop="sid"
+                  prop="token"
                   label="Session Token"
                   min-width="180"
                   width="auto">
@@ -63,14 +63,14 @@
 
                 <el-table-column
                   prop="active"
-                  label="Session State"
+                  label="State"
                   width="150"
                   fixed="right"
                   sortable>
                   <template slot-scope="scope">
                     <el-tag
-                      :type="scope.row.state ? 'danger' : 'success'"
-                      disable-transitions>{{scope.row.state ? 'expired' : 'active'}}</el-tag>
+                      :type="scope.row.active === true ? 'success' : 'danger'"
+                      disable-transitions>{{scope.row.active === true ? 'Active' : 'Expired'}}</el-tag>
                   </template>
                 </el-table-column>
 
@@ -85,14 +85,14 @@
             <el-card class="box-card">
 
               <!-- submission form -->
-              <el-form ref="form" :model="dummyCreationForm" label-width="120px">
-                <el-form-item label="Patient name">
-                  <el-input v-model="patientName"></el-input>
+              <el-form :model="sessionForm" :rules="formRules" ref="sessionForm" label-width="120px">
+                <el-form-item label="Patient name" prop="patientName">
+                  <el-input v-model="sessionForm.patientName"></el-input>
                 </el-form-item>
 
-                <el-form-item label="Instant delivery">
+                <el-form-item label="Duration">
                   <el-slider
-                    v-model="duration"
+                    v-model="sessionForm.duration"
                     :min="sessionDurMin"
                     :max="sessionDurMax"
                     :step="sessionDurStep"
@@ -101,8 +101,7 @@
                 </el-form-item>
 
                 <el-form-item>
-                  <el-button type="primary" @click="onSubmit({patientName, duration})">Create</el-button>
-                  <el-button>Cancel</el-button>
+                  <el-button type="primary" @click="submitForm('sessionForm')">Create</el-button>
                 </el-form-item>
               </el-form>
 
@@ -120,8 +119,6 @@
           </el-main>
         </el-tab-pane>
 
-
-
       </el-tabs>
     </el-header>
 
@@ -131,10 +128,11 @@
       width="70%"
       :before-close="handleClose">
       <p>The session is successfully created.</p>
-      <p>Session ID: {{currSessionID}}</p>
-      <p>Session Token: <strong>{{token}}
+      <p>Session ID: {{ creationResult.sessionId }}</p>
+      <p>Session Token: <strong>{{creationResult.sessionToken}}
           <i class="el-icon-copy-document" @click="copyToken"></i></strong></p>
-      <p>The session will end at: {{sessionEndTime}}</p>
+      <p>The session will end at: {{creationResult.sessionEndTime}}</p>
+      <p>The session can be found in the History.</p>
       <!--TODO: Automatically generate QRcode which contains the app domain + the token for easy access-->
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="dialogVisible = false">Confirm</el-button>
@@ -156,113 +154,43 @@ export default {
   data() {
     return {
       username: '',
-      token:'',
-      hour:'',
-      minute:'',
-      second:'',
-      year:'',
-      month:'',
-      date:'',
-      sessionEndTime:'',
-      currSessionID: '',
+      hiddenId: '',
       fullscreenLoading: false,
       activeName: 'first',
       sessionDurMin: 30,
       sessionDurMax: 600,
       sessionDurStep: 10,
-      table:[],
-      dummyTableData: [
-        {
-          sessionId: '000001',
-          patientName: 'Antony',
-          startTime: '2022-6-30 | 8:40:30',
-          duration: '120',
-          sessionToken: 'AAAAAA',
-          state: 'expired'
-        },
-        {
-          sessionId: '000002',
-          patientName: 'Bruce',
-          startTime: '2022-6-30 | 8:40:30',
-          duration: '120',
-          sessionToken: 'BBBBBB',
-          state: 'expired'
-        },
-        {
-          sessionId: '000003',
-          patientName: 'Charlie',
-          startTime: '2022-6-30 | 8:40:30',
-          duration: '120',
-          sessionToken: 'CCCCCC',
-          state: 'expired'
-        },
-        {
-          sessionId: '000004',
-          patientName: 'David',
-          startTime: '2022-6-30 | 8:40:30',
-          duration: '12000',
-          sessionToken: 'DDDDDD',
-          state: 'active'
-        }
-      ],
-      dummyCreationForm: {
+      historyData: [],
+      sessionForm: {
         patientName: '',
-        startTime: '',
         duration: 120,
       },
+      formRules: {
+        patientName: [
+          {required: true, message: 'Please input patient name', trigger: 'change'},
+        ],
+      },
       dialogVisible: false,
-      dummyCreationResult:{
-        sessionId: '000007',
-        sessionToken: 'GGGGGG',
-        sessionEndTime: '2022-7-1 | 0:30:30',
+      creationResult:{
+        sessionId: '',
+        sessionToken: '',
+        sessionEndTime: '',
       }
     };
   },
   computed:{
-
-    patientName:{
-      get() {
-        return this.$store.state.session.patientName;
-      },
-      set(value) {
-        this.$store.commit("session/setpatientName", value);
-      },
-    },
-    duration:{
-      get() {
-        return this.$store.state.session.duration;
-      },
-      set(value) {
-        this.$store.commit("session/setduration", value);
-      },
-    },
-    sid:{
-      get() {
-        return this.$store.state.session.sid;
-      },
-      set(value) {
-        this.$store.commit("session/setsid", value);
-      },
-    }
   },
   methods: {
     async logout(){
       console.log('logout');
-      // TODO (done))
-      // Method only for vanilla js
-      // var cookies = document.cookie.split(';');
-      // for (var i=0; i<cookies.length; i++){
-      //   var cookie = cookies[i];
-      //   var eqPos = cookie.indexOf("=");
-      //   var name = eqPos > -1 ? cookie.substr(0,eqPos):cookie;
-      //   document.cookie = name +"=;expires=Thi, 01 Jan 1970 00:00:00 GMT";
-      // }
-      // localStorage.clear();
-      await this.$auth.logout();
-      this.$router.push('login');
+      await this.$axios.post("http://localhost:5000/user/logout", {
+        _id: this.hiddenId,
+      })
+      localStorage.removeItem('token');
+      await this.$router.push('/');
     },
-
-    async displayName(){
+    displayName(){
+      console.log(JSON.parse(localStorage.getItem("profile")))
       this.username = JSON.parse(localStorage.getItem("profile")).data.name;
       // console.log(this.username);
       // console.log("WAAAAAAAAAAAAAAA "+ this.username)
@@ -282,80 +210,61 @@ export default {
 
     handleClick(tab, event) {
       console.log(tab, event);
+      if (tab.paneName === 'second') {
+        console.log('pull history');
+        this.pullHistory();
+      }
     },
 
-    async onSubmit(session) {
+    submitForm(formName) {
       console.log('submit, if the session is successfully created, server will return the Session ID + Session Token');
       // console.log(this.dummyCreationForm);
       // console.log(Math.floor(Math.random() * Date.now()))
       // TODO set the creation time as NOW
-      // TODO (done) send the the request with details to the server
-      // TODO (done) if the request is accepted, show the dialog with session IDs and Tokens
-      // TODO (done) fullscreen loading when sending/fetching data from backend
-      const currentdate = new Date();
-      console.log(currentdate);
-      //method to get date
-      const hour = Math.floor(session.duration/3600);
-      const minute =  Math.floor((session.duration-hour*3600)/60);
-      const second =  Math.floor((session.duration-hour*3600-minute*60));
-      this.hour = currentdate.getHours() + hour
-      this.minute = currentdate.getMinutes() + minute
-      this.second= currentdate.getSeconds() + second
-      this.date = currentdate.getDate()
-      this.month = currentdate.getMonth()+1
-      this.year = currentdate.getFullYear()
-      this.sessionEndTime = this.year+'-'+this.month+'-'+this.date+' | '+this.hour+':'+this.minute+':'+this.second
+      // TODO send the the request with details to the server
+      // TODO if the request is accepted, show the dialog with session IDs and Tokens
+      // TODO fullscreen loading when sending/fetching data from backend
 
-      // token generation is based on the milisecond the user create the session * random numbers
-      // probability that 2 event happened in a milisecond is one in
-      const dt = currentdate;
-      dt.setSeconds(dt.getSeconds()+this.duration)
-      this.token = Math.floor(Math.random() * Date.now()).toString();
-      console.log(this.duration);
-      console.log(dt);
-      const shortened = this.username.replace(/\s/g, '');
-      await this.$axios.post("http://localhost:5000/session/create", {
-          creator: shortened,
-          start: new Date(),
-          end: dt,
-          patientName: session.patientName,
-          duration: session.duration,
-          sid: this.token,
-        });
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.fullscreenLoading = true;
+          this.creatSession();
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
+      })
 
-      // getting latest ID
-      await this.$axios.get("http://localhost:5000/session/count")
-      .then((response)=>{
-        console.log("count : " + response.data);
-        this.currSessionID = response.data + 1;
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-      this.fullscreenLoading = true;
-      setTimeout(() => {
-        this.fullscreenLoading = false;
-        this.dialogVisible = true;
-      }, 1000);
-      
-      //step to get the real time sessionID
-      
-      //update table value
-      const link = "http://localhost:5000/session/list/:"+this.username.replace(/\s/g, '');
-      
-      await this.$axios.get(link)
-      .then((response)=>{
-        console.log(response.data);
-        this.table = response.data;
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-      
-      const len = this.table.length;
-      console.log("table len ", this.table[len-1]);
-      this.table[len-1].ID = this.currSessionID;
     },
+
+    async creatSession() {
+      const currentDate = new Date();
+      const startTimestamp = currentDate.getTime();
+      const duration = this.sessionForm.duration;
+      const endTimestamp = startTimestamp + this.sessionForm.duration * 1000
+      const creator = this.hiddenId;
+      const patientName = this.sessionForm.patientName;
+      await this.$axios.post("http://localhost:5000/session/create", {
+            creator: creator,
+            patientName: patientName,
+            startTime: startTimestamp,
+            endTime: endTimestamp,
+            duration: duration
+      }).then(res => {
+        console.log(res);
+        if (res.status === 200) {
+          // update modal content
+          this.creationResult.sessionId = res.data.result._id;
+          this.creationResult.sessionEndTime = res.data.result.endTime;
+          this.creationResult.sessionToken = res.data.result.token;
+          setTimeout(() => {
+            this.fullscreenLoading = false;
+            this.dialogVisible = true;
+          }, 100);
+        }
+      })
+    },
+
     handleClose(done) {
       this.$confirm('Are you sure to close this dialog?')
         .then(_ => {
@@ -365,22 +274,38 @@ export default {
         
     },
     copyToken() {
-      navigator.clipboard.writeText(this.token);
+      navigator.clipboard.writeText(this.creationResult.sessionToken);
       console.log('the token is copied.');
       this.$notify({
         title: 'Success',
         message: 'Token is copied to clipboard.',
         type: 'success'
       });
-    }
+    },
+    async pullHistory(){
+
+      await this.$axios.post("http://localhost:5000/session/getSessionByCreator", {
+        creator: this.hiddenId,
+      }).then(res => {
+        if (res.status === 200) {
+          this.historyData = res.data;
+          // check the session state in front-end
+          this.historyData.forEach(record => {
+            record['active'] = (new Date(record.endTime) > new Date());
+            record['startTime'] = String(new Date(record.startTime));
+          })
+        }
+      })
+    },
   },
+
+
+
   mounted(){
-    // this.username = JSON.parse(localStorage.getItem("profile")).data.name;
-    // console.log("OI");
-    // console.log(JSON.parse(localStorage.getItem("profile")));
+    this.hiddenId = JSON.parse(localStorage.getItem("profile")).data._id;
+    console.log(this.hiddenId);
     this.displayName();
-    
-    // axios.get('http://localhost:5000/session/list/:')
+    this.pullHistory();
   },
 }
 </script>

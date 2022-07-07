@@ -1,13 +1,13 @@
 import express from 'express';
-import {create, listSession, getId} from '../controllers/session.js'
-import {signin} from '../controllers/sessionReq.js';
+import {create, getSessionByCreator} from '../controllers/session.js'
+
 const sessionRouter = express.Router();
 
 sessionRouter.post('/create', create);
 
-sessionRouter.post('/signin', signin);
+sessionRouter.post('/getSessionByCreator', getSessionByCreator);
 
-sessionRouter.get('/list/:name', listSession);
+// Only for clean data
+// sessionRouter.post('/deleteSessionByCreator', deleteSessionByCreator);
 
-sessionRouter.get('/count', getId);
 export default sessionRouter;

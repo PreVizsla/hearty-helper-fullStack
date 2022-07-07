@@ -1,6 +1,6 @@
 import express from 'express';
 
-import {signin, signup, signedin} from '../controllers/user.js'
+import {signin, signup, signedin, getHistory, logout} from '../controllers/user.js'
 
 import {create} from '../controllers/session.js'
 
@@ -15,4 +15,9 @@ router.post('/signup', signup);
 
 router.post('/user', signedin);
 
-export default router;  
+router.post('/getHistory', getHistory);
+
+router.post('/logout', logout);
+
+export default router;
+
