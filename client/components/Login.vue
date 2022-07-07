@@ -161,6 +161,14 @@ export default {
         this.$store.commit("user/setconfirmPassword", value);
       },
     },
+    name: {
+      get() {
+        return this.$store.state.user.name;
+      },
+      set(value) {
+        this.$store.commit("user/setname", value);
+      },
+    },
   },
   methods: {
     setIsSignup(){
@@ -179,9 +187,18 @@ export default {
       await this.$auth.loginWith('local',{
           data:user
       })
-      localStorage.setItem('profile', JSON.stringify({user}));
+      const acc = await this.$axios.post("http://localhost:5000/user/user",
+      {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        password: user.password,
+        confirmPassword: user.confirmPassword,
+      })
+      localStorage.setItem('profile', JSON.stringify(acc));
       this.$router.push('/dashboard')
     },
+
     async onSubmitLogIn(user){
       await this.$axios.post("http://localhost:5000/user/signin", {
           firstName: user.firstName,

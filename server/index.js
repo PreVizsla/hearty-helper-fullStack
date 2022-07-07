@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 
 import userRouter from './routes/user.js'
+
 import sessionRouter from "./routes/session.js";
 
 const router = express.Router();
@@ -21,7 +22,6 @@ app.use(cors());
 
 app.use('/user', userRouter)
 app.use('/session', sessionRouter)
-
 
 // mongoDB
 const CONNECTION_URL = 'mongodb+srv://dbUser:uge3MoxqHGzUdUg6@cluster0.ecmnyzu.mongodb.net/?retryWrites=true&w=majority';

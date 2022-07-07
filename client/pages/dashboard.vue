@@ -27,6 +27,7 @@
                 :data="historyData"
                 :default-sort = "{prop: 'sessionId', order: 'descending'}"
                 style="width: 100%">
+
                 <el-table-column
                   prop="_id"
                   label="Session ID"
@@ -34,27 +35,32 @@
                   fixed
                   width="150">
                 </el-table-column>
+
                 <el-table-column
                   prop="patientName"
                   label="Patient Name"
                   width="180">
                 </el-table-column>
+
                 <el-table-column
                   prop="startTime"
                   label="Session Start Time"
                   width="180">
                 </el-table-column>
+
                 <el-table-column
                   prop="duration"
                   label="Session Duration"
                   width="180">
                 </el-table-column>
+
                 <el-table-column
                   prop="token"
                   label="Session Token"
                   min-width="180"
                   width="auto">
                 </el-table-column>
+
                 <el-table-column
                   prop="active"
                   label="State"
@@ -67,6 +73,7 @@
                       disable-transitions>{{scope.row.active === true ? 'Active' : 'Expired'}}</el-tag>
                   </template>
                 </el-table-column>
+
               </el-table>
             </el-card>
             <div style="width: 100%; height: 20px"></div>
@@ -172,7 +179,6 @@ export default {
     };
   },
   computed:{
-
   },
   methods: {
     async logout(){
@@ -186,7 +192,22 @@ export default {
     displayName(){
       console.log(JSON.parse(localStorage.getItem("profile")))
       this.username = JSON.parse(localStorage.getItem("profile")).data.name;
+      // console.log(this.username);
+      // console.log("WAAAAAAAAAAAAAAA "+ this.username)
+      const link = "http://localhost:5000/session/list/:"+this.username.replace(/\s/g, '');
+      console.log(link);
+      // await this.$axios.get("http://localhost:5000/session/list");
+      
+      await this.$axios.get(link)
+      .then((response)=>{
+        console.log(response.data);
+        this.table = response.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      })
     },
+
     handleClick(tab, event) {
       console.log(tab, event);
       if (tab.paneName === 'second') {
@@ -194,6 +215,7 @@ export default {
         this.pullHistory();
       }
     },
+
     submitForm(formName) {
       console.log('submit, if the session is successfully created, server will return the Session ID + Session Token');
       // console.log(this.dummyCreationForm);
@@ -249,6 +271,7 @@ export default {
           done();
         })
         .catch(_ => {});
+        
     },
     copyToken() {
       navigator.clipboard.writeText(this.creationResult.sessionToken);

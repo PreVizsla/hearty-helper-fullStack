@@ -3,7 +3,8 @@ export const state = () => ({
     lastName: '', 
     email: '', 
     password: '', 
-    confirmPassword:''
+    confirmPassword:'',
+    name: '',
 })
 
 export const mutations = {
@@ -21,5 +22,8 @@ export const mutations = {
     },
     setconfirmPassword: (state, data) => {
         state.confirmPassword = data
-    }
+    },
+    setname: (state, data) => {
+        state.name = data
+    },
 }

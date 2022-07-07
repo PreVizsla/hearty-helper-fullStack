@@ -44,7 +44,6 @@ export const getSessionByCreator = async (req, res) => {
 //
 // }
 
-
 export const create = async (req, res) => {
 
     // TODO add the created session to the history

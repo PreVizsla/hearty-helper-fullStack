@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 
 // expireAt will automatically remove the data from the mongo cluster
 const sessionSchema = mongoose.Schema({
-
     creator: { type: String, required: true},
     patientName: { type: String, required: true},
     duration: { type: Number, required: true },

@@ -11,7 +11,7 @@ router.post('/signin', signin);
 
 router.post('/signup', signup);
 
-router.post('/create', create);
+// router.post('/create', create);
 
 router.post('/user', signedin);
 
@@ -20,3 +20,4 @@ router.post('/getHistory', getHistory);
 router.post('/logout', logout);
 
 export default router;
+
