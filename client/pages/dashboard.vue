@@ -11,8 +11,11 @@
                 <span><strong>{{username}}</strong></span>
               </div>
               <p>
-                Welcome {{username}}
+                Welcome to the dashboard!
               </p>
+              <el-row type="flex" justify="end">
+                <el-button type="warning" @click="logout">Logout</el-button>
+              </el-row>
             </el-card>
           </el-main>
         </el-tab-pane>
@@ -109,6 +112,9 @@
             </el-card>
           </el-main>
         </el-tab-pane>
+
+
+
       </el-tabs>
     </el-header>
 
@@ -138,7 +144,7 @@
 
 <script>
 export default {
-  
+
   name: "dashboard",
   data() {
     return {
@@ -230,6 +236,11 @@ export default {
     }
   },
   methods: {
+    logout(){
+      console.log('logout');
+      // TODO
+      this.$router.push('login');
+    },
     displayName(){
       this.username = JSON.parse(localStorage.getItem("profile")).data.name;
     },
@@ -261,7 +272,7 @@ export default {
       // token generation is based on the milisecond the user create the session * random numbers
       // probability that 2 event happened in a milisecond is one in
       this.token = Math.floor(Math.random() * Date.now()).toString();
-      
+
       await this.$axios.post("http://localhost:5000/user/create", {
           patientName: session.patientName,
           duration: session.duration,

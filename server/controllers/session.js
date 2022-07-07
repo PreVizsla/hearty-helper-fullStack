@@ -17,6 +17,9 @@ import Session from '../models/session.js';
 
 
 export const create = async (req, res) => {
+
+    // TODO add the created session to the history
+
     const { sid, duration } = req.body;
 
     console.log(duration);
