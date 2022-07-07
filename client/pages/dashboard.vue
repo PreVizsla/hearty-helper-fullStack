@@ -139,7 +139,7 @@
       </span>
     </el-dialog>
 
-    <el-footer style="position: fixed; bottom: 0; width: 100%; height: 20px; line-height: 20px; z-index: 999; text-align: center; font-size: small; box-shadow: 0px -2px 8px #D0D3D4">
+    <el-footer style="position: fixed; bottom: 0; width: 100%; height: 20px; line-height: 20px; z-index: 999; text-align: center; font-size: small; box-shadow: 0px -2px 8px #D0D3D4; background-color: white">
       Copyright &#169 Ho Lab, HKU
     </el-footer>
 
@@ -189,23 +189,23 @@ export default {
       localStorage.removeItem('token');
       await this.$router.push('/');
     },
-    displayName(){
+    async displayName() {
       console.log(JSON.parse(localStorage.getItem("profile")))
       this.username = JSON.parse(localStorage.getItem("profile")).data.name;
       // console.log(this.username);
       // console.log("WAAAAAAAAAAAAAAA "+ this.username)
-      const link = "http://localhost:5000/session/list/:"+this.username.replace(/\s/g, '');
-      console.log(link);
+      // const link = "http://localhost:5000/session/list/:" + this.username.replace(/\s/g, '');
+      // console.log(link);
       // await this.$axios.get("http://localhost:5000/session/list");
-      
-      await this.$axios.get(link)
-      .then((response)=>{
-        console.log(response.data);
-        this.table = response.data;
-      })
-      .catch((error) => {
-        console.log(error);
-      })
+
+      // await this.$axios.get(link)
+      //   .then((response) => {
+      //     console.log(response.data);
+      //     this.table = response.data;
+      //   })
+      //   .catch((error) => {
+      //     console.log(error);
+      //   })
     },
 
     handleClick(tab, event) {
@@ -255,8 +255,15 @@ export default {
         if (res.status === 200) {
           // update modal content
           this.creationResult.sessionId = res.data.result._id;
-          this.creationResult.sessionEndTime = res.data.result.endTime;
+          this.creationResult.sessionEndTime = String(new Date(res.data.result.endTime));
           this.creationResult.sessionToken = res.data.result.token;
+
+          // Clear form
+          // this.sessionForm = {
+          //   patientName: '',
+          //   duration: 120,
+          // };
+
           setTimeout(() => {
             this.fullscreenLoading = false;
             this.dialogVisible = true;
@@ -271,7 +278,7 @@ export default {
           done();
         })
         .catch(_ => {});
-        
+
     },
     copyToken() {
       navigator.clipboard.writeText(this.creationResult.sessionToken);

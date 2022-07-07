@@ -29,6 +29,22 @@ export const getSessionByCreator = async (req, res) => {
 
 }
 
+export const getSessionByToken = async (req, res) => {
+
+    const { token } = req.body;
+
+    try {
+        console.log("fetching Session");
+        const sessions = await Session.findOne({ token });
+
+        res.status(200).json(sessions);
+    } catch (error){
+        res.status(500).json({ message: "Something went wrong" });
+    }
+
+}
+
+
 // export const deleteSessionByCreator = async (req, res) => {
 //
 //     const { creator } = req.body;
