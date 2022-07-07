@@ -24,49 +24,56 @@
           <el-main>
             <el-card class="box-card">
               <el-table
-                :data="dummyTableData"
+                :data="table"
                 :default-sort = "{prop: 'sessionId', order: 'descending'}"
                 style="width: 100%">
+
                 <el-table-column
-                  prop="sessionId"
+                  prop="ID"
                   label="Session ID"
                   sortable
                   fixed
                   width="150">
                 </el-table-column>
+
                 <el-table-column
                   prop="patientName"
                   label="Patient Name"
                   width="180">
                 </el-table-column>
+
                 <el-table-column
                   prop="startTime"
                   label="Session Start Time"
                   width="180">
                 </el-table-column>
+
                 <el-table-column
                   prop="duration"
                   label="Session Duration"
                   width="180">
                 </el-table-column>
+
                 <el-table-column
-                  prop="sessionToken"
+                  prop="sid"
                   label="Session Token"
                   min-width="180"
                   width="auto">
                 </el-table-column>
+
                 <el-table-column
-                  prop="state"
+                  prop="active"
                   label="Session State"
                   width="150"
                   fixed="right"
                   sortable>
                   <template slot-scope="scope">
                     <el-tag
-                      :type="scope.row.state === 'expired' ? 'danger' : 'success'"
-                      disable-transitions>{{scope.row.state}}</el-tag>
+                      :type="scope.row.state ? 'danger' : 'success'"
+                      disable-transitions>{{scope.row.state ? 'expired' : 'active'}}</el-tag>
                   </template>
                 </el-table-column>
+
               </el-table>
             </el-card>
             <div style="width: 100%; height: 20px"></div>
@@ -162,6 +169,7 @@ export default {
       sessionDurMin: 30,
       sessionDurMax: 600,
       sessionDurStep: 10,
+      table:[],
       dummyTableData: [
         {
           sessionId: '000001',
@@ -260,7 +268,14 @@ export default {
       console.log(link);
       // await this.$axios.get("http://localhost:5000/session/list");
       
-      await this.$axios.get(link);
+      await this.$axios.get(link)
+      .then((response)=>{
+        console.log(response.data);
+        this.table = response.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      })
     },
 
     handleClick(tab, event) {
@@ -310,6 +325,20 @@ export default {
         this.fullscreenLoading = false;
         this.dialogVisible = true;
       }, 1000);
+      
+      //step to get the real time sessionID
+      
+      
+      const link = "http://localhost:5000/session/list/:"+this.username.replace(/\s/g, '');
+      
+      await this.$axios.get(link)
+      .then((response)=>{
+        console.log(response.data);
+        this.table = response.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      })
     },
     handleClose(done) {
       this.$confirm('Are you sure to close this dialog?')
@@ -334,6 +363,7 @@ export default {
     // console.log(JSON.parse(localStorage.getItem("profile")));
     this.displayName();
     
+    // axios.get('http://localhost:5000/session/list/:')
   },
 }
 </script>
