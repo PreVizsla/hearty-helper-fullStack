@@ -131,7 +131,7 @@
       width="70%"
       :before-close="handleClose">
       <p>The session is successfully created.</p>
-      <p>Session ID: {{dummyCreationResult.sessionId}}</p>
+      <p>Session ID: {{currSessionID}}</p>
       <p>Session Token: <strong>{{token}}
           <i class="el-icon-copy-document" @click="copyToken"></i></strong></p>
       <p>The session will end at: {{sessionEndTime}}</p>
@@ -164,6 +164,7 @@ export default {
       month:'',
       date:'',
       sessionEndTime:'',
+      currSessionID: '',
       fullscreenLoading: false,
       activeName: 'first',
       sessionDurMin: 30,
@@ -260,10 +261,11 @@ export default {
       await this.$auth.logout();
       this.$router.push('login');
     },
+
     async displayName(){
       this.username = JSON.parse(localStorage.getItem("profile")).data.name;
-      console.log(this.username);
-      console.log("WAAAAAAAAAAAAAAA "+ this.username)
+      // console.log(this.username);
+      // console.log("WAAAAAAAAAAAAAAA "+ this.username)
       const link = "http://localhost:5000/session/list/:"+this.username.replace(/\s/g, '');
       console.log(link);
       // await this.$axios.get("http://localhost:5000/session/list");
@@ -281,6 +283,7 @@ export default {
     handleClick(tab, event) {
       console.log(tab, event);
     },
+
     async onSubmit(session) {
       console.log('submit, if the session is successfully created, server will return the Session ID + Session Token');
       // console.log(this.dummyCreationForm);
@@ -320,6 +323,15 @@ export default {
           sid: this.token,
         });
 
+      // getting latest ID
+      await this.$axios.get("http://localhost:5000/session/count")
+      .then((response)=>{
+        console.log("count : " + response.data);
+        this.currSessionID = response.data + 1;
+      })
+      .catch((error) => {
+        console.log(error);
+      })
       this.fullscreenLoading = true;
       setTimeout(() => {
         this.fullscreenLoading = false;
@@ -328,7 +340,7 @@ export default {
       
       //step to get the real time sessionID
       
-      
+      //update table value
       const link = "http://localhost:5000/session/list/:"+this.username.replace(/\s/g, '');
       
       await this.$axios.get(link)
@@ -339,6 +351,10 @@ export default {
       .catch((error) => {
         console.log(error);
       })
+      
+      const len = this.table.length;
+      console.log("table len ", this.table[len-1]);
+      this.table[len-1].ID = this.currSessionID;
     },
     handleClose(done) {
       this.$confirm('Are you sure to close this dialog?')
@@ -346,6 +362,7 @@ export default {
           done();
         })
         .catch(_ => {});
+        
     },
     copyToken() {
       navigator.clipboard.writeText(this.token);

@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import Session from '../models/session.js';
-
+import Counter from '../models/counter.js';
 
 export const create = async (req, res) => {
 
@@ -9,7 +9,7 @@ export const create = async (req, res) => {
 
     const { creator, start, end, patientName, sid, duration } = req.body;
 
-    console.log(duration);
+    // console.log(duration);
     
     try {
         // hashing wont work unless we have an id to match the hash (e.g. patient's name / doctors name)
@@ -30,7 +30,7 @@ export const create = async (req, res) => {
             sid : sid, 
             duration: duration, 
         });
-        console.log(session_result);
+        // console.log(session_result);
 
         const  token = jwt.sign({sid: session_result.sid}, 'test', {expiresIn: durationStr});
         //console.log("a2");
@@ -42,13 +42,30 @@ export const create = async (req, res) => {
     }
 }
 
+export const getId = async(req, res) => {
+    try{
+        Counter.find({seq_value: {$gt:0}}, function(err, session){
+            // console.log(session);
+            // console.log(session[0].seq_value);
+            if(err){
+                res.send(error)
+            } else{
+                res.json(session[0].seq_value)
+            }
+        });
+        // console.log("tess");
+    } catch (error){
+        console.log(error);
+        res.status(500).json({ message: "Something went wrong" });
+    }
+}
+
 export const listSession = async(req, res) => {
     
     const {user} = req.body;
-    console.log("req "+req);
-    console.log("user "+ req.params.name);
+    // console.log("req "+req);
+    // console.log("user "+ req.params.name);
     try{    
-        
         // Session.find({}, {projection: {creator: req.params.name }},function (err, session){
         Session.find({"creator" : req.params.name.substring(1)}, function (err, session){
             if(err){
@@ -65,11 +82,8 @@ export const listSession = async(req, res) => {
                 //     }
                 // }
 
-
-
-
                 res.json(session)
-                console.log(session)
+                // console.log(session)
             }
                 
             
