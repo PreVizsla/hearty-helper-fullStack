@@ -82,7 +82,7 @@ export default {
       routes.push({
         name: 'custom',
         path: '*',
-        component: resolve(__dirname, 'pages/Dashboard.vue')
+        component: resolve(__dirname, 'pages/dashboard.vue')
       })
     }
   },
