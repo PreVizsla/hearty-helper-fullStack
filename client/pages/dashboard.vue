@@ -252,9 +252,17 @@ export default {
       await this.$auth.logout();
       this.$router.push('login');
     },
-    displayName(){
+    async displayName(){
       this.username = JSON.parse(localStorage.getItem("profile")).data.name;
+      console.log(this.username);
+      console.log("WAAAAAAAAAAAAAAA "+ this.username)
+      const link = "http://localhost:5000/session/list/:"+this.username.replace(/\s/g, '');
+      console.log(link);
+      // await this.$axios.get("http://localhost:5000/session/list");
+      
+      await this.$axios.get(link);
     },
+
     handleClick(tab, event) {
       console.log(tab, event);
     },
@@ -287,8 +295,9 @@ export default {
       this.token = Math.floor(Math.random() * Date.now()).toString();
       console.log(this.duration);
       console.log(dt);
+      const shortened = this.username.replace(/\s/g, '');
       await this.$axios.post("http://localhost:5000/session/create", {
-          creator: this.username,
+          creator: shortened,
           start: new Date(),
           end: dt,
           patientName: session.patientName,
@@ -321,8 +330,10 @@ export default {
   },
   mounted(){
     // this.username = JSON.parse(localStorage.getItem("profile")).data.name;
-    // console.log(username);
+    // console.log("OI");
+    // console.log(JSON.parse(localStorage.getItem("profile")));
     this.displayName();
+    
   },
 }
 </script>

@@ -41,3 +41,45 @@ export const create = async (req, res) => {
         res.status(500).json({ message: "Something went wrong" });
     }
 }
+
+export const listSession = async(req, res) => {
+    
+    const {user} = req.body;
+    console.log("req "+req);
+    console.log("user "+ req.params.name);
+    try{    
+        
+        // Session.find({}, {projection: {creator: req.params.name }},function (err, session){
+        Session.find({"creator" : req.params.name.substring(1)}, function (err, session){
+            if(err){
+                res.send(error)
+            }else{
+                // var len = session.length;
+                // for(var i=0;i<len;i++){
+                //     console.log("yeeee");
+                //     // console.log(session[i]);
+                //     console.log(session[i].creator);
+                //     if (session[i].creator != req.params.name){
+                //         console.log("REMOVE")
+                //         session[i].pop();
+                //     }
+                // }
+
+
+
+
+                res.json(session)
+                console.log(session)
+            }
+                
+            
+        });
+
+
+        // res.status(500).json({message: "success"})
+    }
+    catch (error){
+        console.log(error);
+        res.status(500).json({ message: "Something went wrong" });
+    }
+}
