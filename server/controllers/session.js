@@ -30,10 +30,10 @@ export const create = async (req, res) => {
         console.log("tessss "+ new Date(Date.now() +duration))
         // succeed in setting customized expiry
         // const session_result = await Session.create({ sid : hashedSession, duration: duration, expiresAt: dt });
-        const session_result = await Session.create({ sid : hashedSession, duration: duration, expiresAt: Date.now() });
+        const session_result = await Session.create({ sid : sid, duration: duration, expiresAt: Date.now() });
         console.log(session_result);
 
-        const  token = jwt.sign({sid: session_result.sid}, 'test', {expiresIn: duration});
+        const  token = jwt.sign({sid: session_result.sid}, 'test', {expiresIn: durationStr});
         //console.log("a2");
         res.status(200).json({ result: session_result, token });
     } catch (error){
