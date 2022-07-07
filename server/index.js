@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 
 import userRouter from './routes/user.js'
-
+import sessionRouter from './routes/session.js'
 const app = express();
 
 app.use(bodyParser.json({limit: "1mb", extended: true}));
@@ -12,6 +12,7 @@ app.use(bodyParser.urlencoded({limit: "1mb", extended: true}));
 app.use(cors());
 
 app.use('/user', userRouter)
+app.use('/session', sessionRouter)
 
 // mongoDB
 const CONNECTION_URL = 'mongodb+srv://previzsla:previzsla123@cluster0.dqxnt.mongodb.net/?retryWrites=true&w=majority';

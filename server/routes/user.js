@@ -11,8 +11,8 @@ router.post('/signin', signin);
 
 router.post('/signup', signup);
 
-router.post('/create', create);
+// router.post('/create', create);
 
 router.post('/user', signedin);
 
-export default router;
+export default router;  

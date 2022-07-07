@@ -210,6 +210,7 @@ export default {
     };
   },
   computed:{
+
     patientName:{
       get() {
         return this.$store.state.session.patientName;
@@ -236,9 +237,19 @@ export default {
     }
   },
   methods: {
-    logout(){
+    async logout(){
       console.log('logout');
-      // TODO
+      // TODO (done))
+      // Method only for vanilla js
+      // var cookies = document.cookie.split(';');
+      // for (var i=0; i<cookies.length; i++){
+      //   var cookie = cookies[i];
+      //   var eqPos = cookie.indexOf("=");
+      //   var name = eqPos > -1 ? cookie.substr(0,eqPos):cookie;
+      //   document.cookie = name +"=;expires=Thi, 01 Jan 1970 00:00:00 GMT";
+      // }
+      // localStorage.clear();
+      await this.$auth.logout();
       this.$router.push('login');
     },
     displayName(){
@@ -252,9 +263,9 @@ export default {
       // console.log(this.dummyCreationForm);
       // console.log(Math.floor(Math.random() * Date.now()))
       // TODO set the creation time as NOW
-      // TODO send the the request with details to the server
-      // TODO if the request is accepted, show the dialog with session IDs and Tokens
-      // TODO fullscreen loading when sending/fetching data from backend
+      // TODO (done) send the the request with details to the server
+      // TODO (done) if the request is accepted, show the dialog with session IDs and Tokens
+      // TODO (done) fullscreen loading when sending/fetching data from backend
       const currentdate = new Date();
       console.log(currentdate);
       //method to get date
@@ -271,9 +282,15 @@ export default {
 
       // token generation is based on the milisecond the user create the session * random numbers
       // probability that 2 event happened in a milisecond is one in
+      const dt = currentdate;
+      dt.setSeconds(dt.getSeconds()+this.duration)
       this.token = Math.floor(Math.random() * Date.now()).toString();
-
-      await this.$axios.post("http://localhost:5000/user/create", {
+      console.log(this.duration);
+      console.log(dt);
+      await this.$axios.post("http://localhost:5000/session/create", {
+          creator: this.username,
+          start: new Date(),
+          end: dt,
           patientName: session.patientName,
           duration: session.duration,
           sid: this.token,
@@ -293,7 +310,7 @@ export default {
         .catch(_ => {});
     },
     copyToken() {
-      // TODO copy the token to the clipboard
+      navigator.clipboard.writeText(this.token);
       console.log('the token is copied.');
       this.$notify({
         title: 'Success',

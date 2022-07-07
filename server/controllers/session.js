@@ -2,38 +2,34 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import Session from '../models/session.js';
 
-// export const create = async (req, res) => {
-//     const { id } = req.body;
-
-//     try {
-//         //secret (test)
-//         const token = jwt.sign({ email: existingUser.email, id: existingUser._id }, 'test', { expiresIn: "1h"});
-
-//         res.status(200).json({ result: existingUser, token });
-//     } catch (error){
-//         res.status(500).json({ message: "Something went wrong" });
-//     }
-// }
-
 
 export const create = async (req, res) => {
 
     // TODO add the created session to the history
 
-    const { sid, duration } = req.body;
+    const { creator, start, end, patientName, sid, duration } = req.body;
 
     console.log(duration);
     
     try {
-        const hashedSession = await bcrypt.hash(sid, 14);
+        // hashing wont work unless we have an id to match the hash (e.g. patient's name / doctors name)
+        //const hashedSession = await bcrypt.hash(sid, 14);
         const dt = new Date();
         dt.setSeconds(dt.getSeconds()+duration);
         const durationStr = duration.toString() + 's';
-        console.log("asdfadsf"+dt);
-        console.log("tessss "+ new Date(Date.now() +duration))
-        // succeed in setting customized expiry
+        // console.log("asdfadsf"+dt);
+        // console.log("tessss "+ new Date(Date.now() +duration))
+        
         // const session_result = await Session.create({ sid : hashedSession, duration: duration, expiresAt: dt });
-        const session_result = await Session.create({ sid : sid, duration: duration, expiresAt: Date.now() });
+        const session_result = await Session.create({ 
+            creator: creator, 
+            patientName: patientName, 
+            startTime: start, 
+            endTime : end, 
+            active: true,
+            sid : sid, 
+            duration: duration, 
+        });
         console.log(session_result);
 
         const  token = jwt.sign({sid: session_result.sid}, 'test', {expiresIn: durationStr});
