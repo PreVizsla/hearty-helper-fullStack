@@ -1,0 +1,11 @@
+{
+  "Login": {
+    "description": "Auto imported from components/Login.vue"
+  },
+  "Login2": {
+    "description": "Auto imported from components/Login_2.vue"
+  },
+  "NuxtLogo": {
+    "description": "Auto imported from components/NuxtLogo.vue"
+  }
+}

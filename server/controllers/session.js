@@ -2,38 +2,87 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import Session from '../models/session.js';
 
-// export const create = async (req, res) => {
-//     const { id } = req.body;
+function makeToken(length) {
+    let result = '';
+    const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ0123456789';
+    const charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+        result += characters.charAt(Math.floor(Math.random() *
+            charactersLength));
+    }
+    return result;
+}
 
+
+export const getSessionByCreator = async (req, res) => {
+
+    const { creator } = req.body;
+
+    try {
+        console.log("fetching Session");
+        const sessions = await Session.find({ creator });
+
+        res.status(200).json(sessions);
+    } catch (error){
+        res.status(500).json({ message: "Something went wrong" });
+    }
+
+}
+
+export const getSessionByToken = async (req, res) => {
+
+    const { token } = req.body;
+
+    try {
+        console.log("fetching Session");
+        const sessions = await Session.findOne({ token });
+
+        res.status(200).json(sessions);
+    } catch (error){
+        res.status(500).json({ message: "Something went wrong" });
+    }
+
+}
+
+
+// export const deleteSessionByCreator = async (req, res) => {
+//
+//     const { creator } = req.body;
+//
 //     try {
-//         //secret (test)
-//         const token = jwt.sign({ email: existingUser.email, id: existingUser._id }, 'test', { expiresIn: "1h"});
-
-//         res.status(200).json({ result: existingUser, token });
+//         console.log("fetching Session");
+//         const sessions = await Session.deleteMany({ creator });
+//
+//         res.status(200).json(sessions);
 //     } catch (error){
 //         res.status(500).json({ message: "Something went wrong" });
 //     }
+//
 // }
 
-
 export const create = async (req, res) => {
-    const { sid } = req.body;
 
-    console.log(sid);
+    // TODO add the created session to the history
+
+    const { creator, patientName, startTime, endTime, duration} = req.body;
+    const token = makeToken(6);
+
     try {
-        const hashedSession = await bcrypt.hash(sid, 12);
-        
-        //console.log("a");
-        
-        const session_result = await Session.create({ sid : hashedSession});
-        //console.log("a1");
+        const sessionResult = await Session.create({
+            creator: creator,
+            patientName: patientName,
+            duration: duration,
+            startTime: startTime,
+            endTime: endTime,
+            token: token,
+        });
 
-        const  token = jwt.sign({sid: session_result.sid}, 'test', {expiresIn: "20s"});
-        //console.log("a2");
-        res.status(200).json({ result: session_result, token });
-    } catch (error){
-        console.error(error.response.data);
-        console.error(sid);
+        console.log(sessionResult);
+        res.status(200).json({ result: sessionResult });
+
+    } catch (e) {
+
         res.status(500).json({ message: "Something went wrong" });
     }
+
 }
