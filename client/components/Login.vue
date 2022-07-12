@@ -174,6 +174,7 @@ export default {
     setIsSignup(){
       this.isSignup = !this.isSignup
     },
+    // signup
     async onSubmit(user){
       console.log(user);
       console.log(user.firstName);
@@ -183,6 +184,10 @@ export default {
           email: user.email,
           password: user.password,
           confirmPassword: user.confirmPassword,
+        }).then(res => {
+          if(res.status === 400){
+            alert('User already exists')
+          }
         });
       await this.$auth.loginWith('local',{
           data:user
@@ -199,6 +204,7 @@ export default {
       this.$router.push('/dashboard')
     },
 
+    // login
     async onSubmitLogIn(user){
       await this.$axios.post("https://hhelper-server.herokuapp.com/user/signin", {
           firstName: user.firstName,
@@ -206,7 +212,15 @@ export default {
           email: user.email,
           password: user.password,
           confirmPassword: user.confirmPassword,
+        }).then(res => {
+          console.log("sefaesfasef");
+          if(res.status === 404){
+            alert('User doesn\'t exist');
+          }else if (res.status === 403){
+            alert('Invalid Credentials');
+          }
         });
+      
       await this.$auth.loginWith('local',{
         data: user
       });
