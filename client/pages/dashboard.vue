@@ -183,7 +183,7 @@ export default {
   methods: {
     async logout(){
       console.log('logout');
-      await this.$axios.post("http://localhost:5000/user/logout", {
+      await this.$axios.post("https://hhelper-server.herokuapp.com/user/logout", {
         _id: this.hiddenId,
       })
       localStorage.removeItem('token');
@@ -244,7 +244,7 @@ export default {
       const endTimestamp = startTimestamp + this.sessionForm.duration * 1000
       const creator = this.hiddenId;
       const patientName = this.sessionForm.patientName;
-      await this.$axios.post("http://localhost:5000/session/create", {
+      await this.$axios.post("https://hhelper-server.herokuapp.com/session/create", {
             creator: creator,
             patientName: patientName,
             startTime: startTimestamp,
@@ -291,7 +291,7 @@ export default {
     },
     async pullHistory(){
 
-      await this.$axios.post("http://localhost:5000/session/getSessionByCreator", {
+      await this.$axios.post("https://hhelper-server.herokuapp.com/session/getSessionByCreator", {
         creator: this.hiddenId,
       }).then(res => {
         if (res.status === 200) {

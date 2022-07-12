@@ -56,7 +56,7 @@ export default {
           // autoFetch: true
         },
         endpoints: {
-          login: { url: 'http://localhost:5000/user/signin', method: 'post', propertyName: 'token' },
+          login: { url: 'https://hhelper-server.herokuapp.com/user/signin', method: 'post', propertyName: 'token' },
           logout: { url: '/api/auth/logout', method: 'post' },
           user: false,
         },

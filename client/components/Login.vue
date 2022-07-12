@@ -177,7 +177,7 @@ export default {
     async onSubmit(user){
       console.log(user);
       console.log(user.firstName);
-      await this.$axios.post("http://localhost:5000/user/signup", {
+      await this.$axios.post("https://hhelper-server.herokuapp.com/user/signup", {
           firstName: user.firstName,
           lastName: user.lastName,
           email: user.email,
@@ -187,7 +187,7 @@ export default {
       await this.$auth.loginWith('local',{
           data:user
       })
-      const acc = await this.$axios.post("http://localhost:5000/user/user",
+      const acc = await this.$axios.post("https://hhelper-server.herokuapp.com/user/user",
       {
         firstName: user.firstName,
         lastName: user.lastName,
@@ -200,7 +200,7 @@ export default {
     },
 
     async onSubmitLogIn(user){
-      await this.$axios.post("http://localhost:5000/user/signin", {
+      await this.$axios.post("https://hhelper-server.herokuapp.com/user/signin", {
           firstName: user.firstName,
           lastName: user.lastName,
           email: user.email,
@@ -210,7 +210,7 @@ export default {
       await this.$auth.loginWith('local',{
         data: user
       });
-      const acc = await this.$axios.post("http://localhost:5000/user/user",
+      const acc = await this.$axios.post("https://hhelper-server.herokuapp.com/user/user",
       {
         firstName: user.firstName,
         lastName: user.lastName,
