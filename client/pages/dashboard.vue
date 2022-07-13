@@ -278,7 +278,6 @@ export default {
           done();
         })
         .catch(_ => {});
-
     },
     copyToken() {
       navigator.clipboard.writeText(this.creationResult.sessionToken);

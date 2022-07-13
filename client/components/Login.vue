@@ -4,55 +4,66 @@
     <el-card>
       <h2 v-if="isSignup" style="text-align: center">SIGN UP</h2>
       <h2 v-else style="text-align: center">LOG IN</h2>
+      
       <el-form
+        :model = "ruleForm"
+        :rules = "rules"
+        ref = "ruleForm"
         class="login-form"
-        ref="form"
       >
-        <!-- prefix icon not working, followed this guideline -->
-        <!-- https://fontawesome.com/docs/web/use-with/vue/use-with -->
-        <!-- added fontawesome plugins too -->
+      
+        <!-- rules prop doesnt work with v-if -->
+        <div>
+          <el-form-item prop="firstName" v-if="isSignup">
+            <el-input v-model= "ruleForm.firstName" placeholder="First Name"
+            prefix-icon="el-icon-user">
+            </el-input>
+          </el-form-item>
+        </div>
 
+        <div>
+          <!-- lastname prop only works if firstname has div -->
+          <el-form-item  prop="lastName" v-if="isSignup" >
+            <el-input
+              v-model= "ruleForm.lastName"
+              placeholder="Last Name"
+              prefix-icon="el-icon-user"
+            ></el-input>
+          </el-form-item>
+        </div>
 
-        <el-form-item v-if="isSignup" prop="firstName">
-          <el-input v-model="firstName" placeholder="First Name"
-          prefix-icon="el-icon-user">
-          </el-input>
-        </el-form-item>
-
-        <el-form-item v-if="isSignup" prop="lastName">
-          <el-input
-            v-model="lastName"
-            placeholder="Last Name"
-            prefix-icon="el-icon-user"
-          ></el-input>
-        </el-form-item>
-
+        <div>
         <el-form-item prop="email">
           <el-input
-            v-model="email"
+            v-model = "ruleForm.email"
             placeholder="email"
             type="email"
             prefix-icon="el-icon-message"
           ></el-input>
         </el-form-item>
+        </div>
 
+        <div>
         <el-form-item prop="password">
           <el-input
-            v-model="password"
+            v-model= "ruleForm.password"
             placeholder="Password"
             type="password"
             prefix-icon="el-icon-lock"
           ></el-input>
         </el-form-item>
+        </div>
 
+        <div>
         <el-form-item v-if="isSignup" prop="confirmPassword">
           <el-input
-            v-model="confirmPassword"
+            v-model= "ruleForm.confirmPassword"
             placeholder="Password Confirmation"
             type="password"
             prefix-icon="el-icon-lock"
           ></el-input>
         </el-form-item>
+        </div>
 
         <el-form-item class="placeholder"></el-form-item>
 
@@ -61,7 +72,7 @@
           <el-button
             class="login-button"
             type="primary"
-            @click="onSubmit({ firstName, lastName, email, password, confirmPassword })"
+            @click="onSubmit('ruleForm')"
             block
           >Sign Up</el-button>
         </el-form-item>
@@ -71,7 +82,7 @@
           <el-button
             class="login-button"
             type="primary"
-            @click="onSubmitLogIn({ firstName, lastName, email, password, confirmPassword })"
+            @click="onSubmitLogIn('ruleForm')"
             block
           >Login</el-button>
         </el-form-item>
@@ -115,126 +126,159 @@
 <script>
 export default {
   name: "login",
+
   data(){
-    return{
-      isSignup: false
+    var validateConfirmPwd = (rule, value, callback) => {
+        if (this.ruleForm.password !== value) {
+            callback (new Error ('the confirmation password is inconsistent with the new password!' ))
+        } else {
+            callback()
+        }
     }
-  },
-  computed: {
-    firstName: {
-      get() {
-        return this.$store.state.user.firstName;
+    return{
+      success: false,
+      error:false,
+      ruleForm: {
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        name: '',
       },
-      set(value) {
-        this.$store.commit("user/setfirstName", value);
-      },
-    },
-    lastName: {
-      get() {
-        return this.$store.state.user.lastName;
-      },
-      set(value) {
-        this.$store.commit("user/setlastName", value);
-      },
-    },
-    email: {
-      get() {
-        return this.$store.state.user.email;
-      },
-      set(value) {
-        this.$store.commit("user/setEmail", value);
-      },
-    },
-    password: {
-      get() {
-        return this.$store.state.user.password;
-      },
-      set(value) {
-        this.$store.commit("user/setPassword", value);
-      },
-    },
-    confirmPassword: {
-      get() {
-        return this.$store.state.user.confirmPassword;
-      },
-      set(value) {
-        this.$store.commit("user/setconfirmPassword", value);
-      },
-    },
-    name: {
-      get() {
-        return this.$store.state.user.name;
-      },
-      set(value) {
-        this.$store.commit("user/setname", value);
-      },
-    },
+      isSignup: false,
+      rules: {
+        firstName: [
+          {required:true, message: 'Please input first name', trigger: 'blur'},
+          {min:1, message:'first name should be at least 1 character', trigger: 'blur'}
+        ],lastName: [
+          {required:false, message: 'Please input last name', trigger: 'blur'}
+        ],email: [
+          {required:true, message: 'Please input email', trigger: 'blur'},
+          {type: 'email', message: 'Please enter a valid email address', trigger: 'blur' },
+        ],password: [
+          {required:true, message: 'Please input password', trigger: 'blur'},
+          {min:6, message:'Password should be at least 6 character', trigger: 'blur'}
+        ],confirmPassword:[
+          {required:true, message: 'Please re-input password', trigger: 'blur'},
+          {validator: validateConfirmPwd, trigger: 'blur' }
+        ]
+      }
+    };
   },
   methods: {
     setIsSignup(){
       this.isSignup = !this.isSignup
     },
+
     // signup
     async onSubmit(user){
-      console.log(user);
-      console.log(user.firstName);
-      await this.$axios.post("https://hhelper-server.herokuapp.com/user/signup", {
-          firstName: user.firstName,
-          lastName: user.lastName,
-          email: user.email,
-          password: user.password,
-          confirmPassword: user.confirmPassword,
-        }).then(res => {
-          if(res.status === 400){
-            alert('User already exists')
-          }
-        });
-      await this.$auth.loginWith('local',{
-          data:user
-      })
-      const acc = await this.$axios.post("https://hhelper-server.herokuapp.com/user/user",
-      {
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        password: user.password,
-        confirmPassword: user.confirmPassword,
-      })
-      localStorage.setItem('profile', JSON.stringify(acc));
-      this.$router.push('/dashboard')
+      this.$refs[user].validate((valid) => {
+        if (valid) {
+          this.success = true;
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
+      });
+      console.log(this.success);
+      if(this.success){
+        console.log("success 1");
+        await this.$axios.post("https://hhelper-server.herokuapp.com/user/signup", {
+        // await this.$axios.post("http://localhost:5000/user/signup", {
+            firstName: this.ruleForm.firstName,
+            lastName: this.ruleForm.lastName,
+            email: this.ruleForm.email,
+            password: this.ruleForm.password,
+            confirmPassword: this.ruleForm.confirmPassword,
+          }).then(res => {
+            if(res.data.error === 400){
+              alert('User already exists');
+              this.error = true;
+            }else if(res.data.error === 403){
+              alert('Password don\'t match');
+              this.error = true;
+            }else{
+              this.error = false;
+            }
+          });
+
+        //if there are no error
+        if(!this.error){
+          await this.$auth.loginWith('local',{
+              data:this.ruleForm
+          })
+
+          const acc = await this.$axios.post("https://hhelper-server.herokuapp.com/user/user",
+          // const acc = await this.$axios.post("http://localhost:5000/user/user",
+          {
+            firstName: this.ruleForm.firstName,
+            lastName: this.ruleForm.lastName,
+            email: this.ruleForm.email,
+            password: this.ruleForm.password,
+            confirmPassword: this.ruleForm.confirmPassword,
+          })
+          localStorage.setItem('profile', JSON.stringify(acc));
+          this.$router.push('/dashboard')
+        }
+      }
     },
 
     // login
     async onSubmitLogIn(user){
-      await this.$axios.post("https://hhelper-server.herokuapp.com/user/signin", {
-          firstName: user.firstName,
-          lastName: user.lastName,
-          email: user.email,
-          password: user.password,
-          confirmPassword: user.confirmPassword,
-        }).then(res => {
-          console.log("sefaesfasef");
-          if(res.status === 404){
-            alert('User doesn\'t exist');
-          }else if (res.status === 403){
-            alert('Invalid Credentials');
-          }
-        });
-      
-      await this.$auth.loginWith('local',{
-        data: user
+      this.$refs[user].validate((valid) => {
+        if (valid) {
+          this.success = true;
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
       });
-      const acc = await this.$axios.post("https://hhelper-server.herokuapp.com/user/user",
-      {
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        password: user.password,
-        confirmPassword: user.confirmPassword,
-      })
-      // localStorage.setItem('profile', JSON.stringify({acc}));
-      localStorage.setItem('profile', JSON.stringify(acc));
-      this.$router.push('/dashboard')
+
+      if(this.success){
+        await this.$axios.post("https://hhelper-server.herokuapp.com/user/signin", {
+        // await this.$axios.post("http://localhost:5000/user/signin", {
+            firstName:this.ruleForm.firstName,
+            lastName: this.ruleForm.lastName,
+            email: this.ruleForm.email,
+            password: this.ruleForm.password,
+            confirmPassword: this.ruleForm.confirmPassword,
+          }).then(res => {
+            console.log("status "+res.status);
+            console.log("error: "+res.error);
+            console.log("msg: "+res.json);
+            console.log("data: "+res.data.error);
+            if(res.data.error === 404){
+              alert('User doesn\'t exist');
+            }else if (res.data.error === 403){
+              alert('Invalid Credentials');
+            }else{
+              this.error = false;
+            }
+        })
+        //if there are no error
+        if(!this.error){
+        // console.log("tes " + res);
+        // console.log("status "+ res.status);
+          // causing error to stop async function
+            await this.$auth.loginWith('local',{
+            data: this.ruleForm
+            });
+            const acc = await this.$axios.post("https://hhelper-server.herokuapp.com/user/user",
+            // const acc = await this.$axios.post("http://localhost:5000/user/user",
+            {
+              firstName: this.ruleForm.firstName,
+              lastName: this.ruleForm.lastName,
+              email: this.ruleForm.email,
+              password: this.ruleForm.password,
+              confirmPassword: this.ruleForm.confirmPassword,
+            })
+            // localStorage.setItem('profile', JSON.stringify({acc}));
+            localStorage.setItem('profile', JSON.stringify(acc));
+            this.$router.push('/dashboard')
+        }
+      }
+      
     },
 
     // resetUser(user) {
