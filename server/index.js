@@ -24,7 +24,9 @@ app.use('/user', userRouter)
 app.use('/session', sessionRouter)
 
 // mongoDB
-const CONNECTION_URL = 'mongodb+srv://dbUser:uge3MoxqHGzUdUg6@cluster0.ecmnyzu.mongodb.net/?retryWrites=true&w=majority';
+// const CONNECTION_URL = 'mongodb+srv://dbUser:uge3MoxqHGzUdUg6@cluster0.ecmnyzu.mongodb.net/?retryWrites=true&w=majority';
+const CONNECTION_URL = 'mongodb+srv://previzsla:previzsla123@cluster0.dqxnt.mongodb.net/?retryWrites=true&w=majority';
+
 const PORT = process.env.PORT || 5000;
 
 mongoose.connect(CONNECTION_URL, { useNewUrlParser: true, useUnifiedTopology: true })

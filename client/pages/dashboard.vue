@@ -183,29 +183,16 @@ export default {
   methods: {
     async logout(){
       console.log('logout');
+      localStorage.removeItem('token');
       await this.$axios.post("https://hhelper-server.herokuapp.com/user/logout", {
         _id: this.hiddenId,
-      })
-      localStorage.removeItem('token');
+      });
+      await this.$auth.logout();
       await this.$router.push('/');
     },
     async displayName() {
       console.log(JSON.parse(localStorage.getItem("profile")))
       this.username = JSON.parse(localStorage.getItem("profile")).data.name;
-      // console.log(this.username);
-      // console.log("WAAAAAAAAAAAAAAA "+ this.username)
-      // const link = "http://localhost:5000/session/list/:" + this.username.replace(/\s/g, '');
-      // console.log(link);
-      // await this.$axios.get("http://localhost:5000/session/list");
-
-      // await this.$axios.get(link)
-      //   .then((response) => {
-      //     console.log(response.data);
-      //     this.table = response.data;
-      //   })
-      //   .catch((error) => {
-      //     console.log(error);
-      //   })
     },
 
     handleClick(tab, event) {
@@ -218,13 +205,6 @@ export default {
 
     submitForm(formName) {
       console.log('submit, if the session is successfully created, server will return the Session ID + Session Token');
-      // console.log(this.dummyCreationForm);
-      // console.log(Math.floor(Math.random() * Date.now()))
-      // TODO set the creation time as NOW
-      // TODO send the the request with details to the server
-      // TODO if the request is accepted, show the dialog with session IDs and Tokens
-      // TODO fullscreen loading when sending/fetching data from backend
-
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.fullscreenLoading = true;
@@ -257,12 +237,6 @@ export default {
           this.creationResult.sessionId = res.data.result._id;
           this.creationResult.sessionEndTime = String(new Date(res.data.result.endTime));
           this.creationResult.sessionToken = res.data.result.token;
-
-          // Clear form
-          // this.sessionForm = {
-          //   patientName: '',
-          //   duration: 120,
-          // };
 
           setTimeout(() => {
             this.fullscreenLoading = false;
