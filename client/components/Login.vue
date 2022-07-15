@@ -178,7 +178,7 @@ export default {
           this.success = true;
         } else {
           console.log('error submit!!');
-          return false;
+          this.success = false;
         }
       });
       console.log(this.success);
@@ -231,7 +231,7 @@ export default {
           this.success = true;
         } else {
           console.log('error submit!!');
-          return false;
+          this.success = false;
         }
       });
 
