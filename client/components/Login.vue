@@ -267,8 +267,8 @@ export default {
             await this.$auth.loginWith('local',{
             data: this.ruleForm
             });
-            const acc = await this.$axios.post("https://hhelper-server.herokuapp.com/user/user",
-            // const acc = await this.$axios.post("http://localhost:5000/user/user",
+            // const acc = await this.$axios.post("https://hhelper-server.herokuapp.com/user/user",
+            const acc = await this.$axios.post("http://localhost:5000/user/user",
             {
               firstName: this.ruleForm.firstName,
               lastName: this.ruleForm.lastName,
