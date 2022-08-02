@@ -34,11 +34,12 @@
 
         <div>
         <el-form-item prop="email">
-          <el-input
+          <el-input 
             v-model = "ruleForm.email"
             placeholder="email"
             type="email"
             prefix-icon="el-icon-message"
+            v-on:change="handleInputOnChange" 
           ></el-input>
         </el-form-item>
         </div>
@@ -170,7 +171,9 @@ export default {
     setIsSignup(){
       this.isSignup = !this.isSignup
     },
-
+    handleInputOnChange() {
+      this.ruleForm.email = this.ruleForm.email.toLowerCase()
+    },
     // signup
     async onSubmit(user){
       this.$refs[user].validate((valid) => {
@@ -183,7 +186,7 @@ export default {
       });
       console.log(this.success);
       if(this.success){
-        console.log("success 1");
+        console.log(this.ruleForm);
         await this.$axios.post("https://hhelper-server.herokuapp.com/user/signup", {
         // await this.$axios.post("http://localhost:5000/user/signup", {
             firstName: this.ruleForm.firstName,

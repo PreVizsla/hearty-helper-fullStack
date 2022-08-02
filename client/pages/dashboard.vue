@@ -184,6 +184,7 @@ export default {
     async logout(){
       console.log('logout');
       localStorage.removeItem('token');
+      // await this.$axios.post("http://localhost:5000/user/logout", {
       await this.$axios.post("https://hhelper-server.herokuapp.com/user/logout", {
         _id: this.hiddenId,
       });

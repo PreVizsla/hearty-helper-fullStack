@@ -6,9 +6,9 @@ import User from '../models/user.js';
 export const signin = async (req, res) => {
     const { email, password } = req.body;
     try {
-        // console.log("Log In initiating");
-
-        const existingUser = await User.findOne({ email });
+        console.log("Log In initiating");
+        console.log(email);
+        const existingUser = await User.findOne({ email});
 
         if(!existingUser) return res.status(200).json({ message: "User doesn't exist", error: 404});
 
@@ -38,6 +38,7 @@ export const signedin = async (req, res) => {
     // console.log(req.body);
     try {
         // console.log("fetching user");
+
         const existingUser = await User.findOne({ email });
         // console.log(existingUser);
         res.status(200).json(existingUser);
@@ -51,6 +52,7 @@ export const signup = async (req, res) => {
     const {email, password, confirmPassword, firstName, lastName} = req.body;
 
     try {
+
 
         console.log("sign up initiating");
 
