@@ -150,7 +150,7 @@ export default {
       rules: {
         firstName: [
           {required:true, message: 'Please input first name', trigger: 'blur'},
-          {min:1, message:'first name should be at least 1 character', trigger: 'blur'}
+          {min:1, message:'First name should be at least 1 character long', trigger: 'blur'}
         ],lastName: [
           {required:false, message: 'Please input last name', trigger: 'blur'}
         ],email: [
@@ -158,7 +158,7 @@ export default {
           {type: 'email', message: 'Please enter a valid email address', trigger: 'blur' },
         ],password: [
           {required:true, message: 'Please input password', trigger: 'blur'},
-          {min:6, message:'Password should be at least 6 character', trigger: 'blur'}
+          {min:6, message:'Password should be at least 6 characters long', trigger: 'blur'}
         ],confirmPassword:[
           {required:true, message: 'Please re-input password', trigger: 'blur'},
           {validator: validateConfirmPwd, trigger: 'blur' }
@@ -196,7 +196,7 @@ export default {
               alert('User already exists');
               this.error = true;
             }else if(res.data.error === 403){
-              alert('Password don\'t match');
+              alert('Password doesn\'t match');
               this.error = true;
             }else{
               this.error = false;
