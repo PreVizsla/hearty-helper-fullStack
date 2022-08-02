@@ -188,7 +188,7 @@ export default {
         // await this.$axios.post("http://localhost:5000/user/signup", {
             firstName: this.ruleForm.firstName,
             lastName: this.ruleForm.lastName,
-            email: this.ruleForm.email,
+            email: this.ruleForm.email.toLowerCase(),
             password: this.ruleForm.password,
             confirmPassword: this.ruleForm.confirmPassword,
           }).then(res => {
@@ -214,7 +214,7 @@ export default {
           {
             firstName: this.ruleForm.firstName,
             lastName: this.ruleForm.lastName,
-            email: this.ruleForm.email,
+            email: this.ruleForm.email.toLowerCase(),
             password: this.ruleForm.password,
             confirmPassword: this.ruleForm.confirmPassword,
           })
@@ -240,7 +240,7 @@ export default {
         // await this.$axios.post("http://localhost:5000/user/signin", {
             firstName:this.ruleForm.firstName,
             lastName: this.ruleForm.lastName,
-            email: this.ruleForm.email,
+            email: this.ruleForm.email.toLowerCase(),
             password: this.ruleForm.password,
             confirmPassword: this.ruleForm.confirmPassword,
           }).then(res => {
@@ -269,7 +269,7 @@ export default {
             {
               firstName: this.ruleForm.firstName,
               lastName: this.ruleForm.lastName,
-              email: this.ruleForm.email,
+              email: this.ruleForm.email.toLowerCase(),
               password: this.ruleForm.password,
               confirmPassword: this.ruleForm.confirmPassword,
             })
