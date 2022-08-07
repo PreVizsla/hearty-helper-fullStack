@@ -1,7 +1,7 @@
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'client',
+    title: 'Ausculto Dashboard',
     htmlAttrs: {
       lang: 'en'
     },
@@ -12,7 +12,7 @@ export default {
       { name: 'format-detection', content: 'telephone=no' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      { rel: 'icon', type: 'image/x-icon', href: '/dashboardicon.ico' }
     ]
   },
 
@@ -57,13 +57,13 @@ export default {
         },
         endpoints: {
           login: { url: 'https://hhelper-server.herokuapp.com/user/signin', method: 'post', propertyName: 'token' },
-          
+
           // login: { url: 'http://localhost:5000/user/signin', method: 'post', propertyName: 'token' },
-          
-          
-          
+
+
+
           logout: { url: '/api/auth/logout', method: 'post' },
-          
+
           // logout: { url: 'http://localhost:5000/user/logout', method: 'post' },
           user: false,
         },
