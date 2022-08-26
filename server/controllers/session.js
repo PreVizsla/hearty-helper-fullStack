@@ -1,5 +1,3 @@
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
 import Session from '../models/session.js';
 
 function makeToken(length) {

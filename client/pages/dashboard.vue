@@ -181,6 +181,8 @@ export default {
   computed:{
   },
   methods: {
+
+    // logout function
     async logout(){
       console.log('logout');
       localStorage.removeItem('token');
@@ -191,6 +193,8 @@ export default {
       await this.$auth.logout();
       await this.$router.push('/');
     },
+
+    // to display the profile name when they enter the dashboard
     async displayName() {
       console.log(JSON.parse(localStorage.getItem("profile")))
       this.username = JSON.parse(localStorage.getItem("profile")).data.name;
@@ -204,8 +208,10 @@ export default {
       }
     },
 
+    // When the user create a session
     submitForm(formName) {
       console.log('submit, if the session is successfully created, server will return the Session ID + Session Token');
+      // validating if the form is valid or not
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.fullscreenLoading = true;
@@ -218,6 +224,7 @@ export default {
 
     },
 
+    // the function for creating session
     async creatSession() {
       const currentDate = new Date();
       const startTimestamp = currentDate.getTime();
@@ -247,6 +254,7 @@ export default {
       })
     },
 
+    // to close dialog box
     handleClose(done) {
       this.$confirm('Are you sure to close this dialog?')
         .then(_ => {
@@ -254,6 +262,8 @@ export default {
         })
         .catch(_ => {});
     },
+
+    // quick copy function
     copyToken() {
       navigator.clipboard.writeText(this.creationResult.sessionToken);
       console.log('the token is copied.');
@@ -263,8 +273,9 @@ export default {
         type: 'success'
       });
     },
-    async pullHistory(){
 
+    // function to display the history on the dashboard
+    async pullHistory(){
       await this.$axios.post("https://hhelper-server.herokuapp.com/session/getSessionByCreator", {
         creator: this.hiddenId,
       }).then(res => {
@@ -281,7 +292,7 @@ export default {
   },
 
 
-
+  // when the page is rendered, immediately display the name of the user and prepare the session history of the user
   mounted(){
     this.hiddenId = JSON.parse(localStorage.getItem("profile")).data._id;
     console.log(this.hiddenId);

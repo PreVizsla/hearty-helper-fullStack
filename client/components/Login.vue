@@ -129,6 +129,7 @@ export default {
   name: "login",
 
   data(){
+    // to revalidate the password and password confirmation
     var validateConfirmPwd = (rule, value, callback) => {
         if (this.ruleForm.password !== value) {
             callback (new Error ('the confirmation password is inconsistent with the new password!' ))
@@ -148,6 +149,8 @@ export default {
         name: '',
       },
       isSignup: false,
+      
+      // These are the rules for the forms, Please change if you think it is necessary
       rules: {
         firstName: [
           {required:true, message: 'Please input first name', trigger: 'blur'},
@@ -174,8 +177,10 @@ export default {
     handleInputOnChange() {
       this.ruleForm.email = this.ruleForm.email.toLowerCase()
     },
-    // signup
+
+    // signup function
     async onSubmit(user){
+      // check validity of the form
       this.$refs[user].validate((valid) => {
         if (valid) {
           this.success = true;
@@ -184,9 +189,12 @@ export default {
           this.success = false;
         }
       });
-      console.log(this.success);
+
+
       if(this.success){
-        console.log(this.ruleForm);
+        // if there is no error, send the information to the server
+        // server will return errors if there is illegal request
+        // e.g. user already exist with the same email, password and confirmation password don't match
         await this.$axios.post("https://hhelper-server.herokuapp.com/user/signup", {
         // await this.$axios.post("http://localhost:5000/user/signup", {
             firstName: this.ruleForm.firstName,
@@ -206,7 +214,7 @@ export default {
             }
           });
 
-        //if there are no error
+        //if there are no errors, login with nuxt function
         if(!this.error){
           await this.$auth.loginWith('local',{
               data:this.ruleForm
@@ -227,8 +235,10 @@ export default {
       }
     },
 
-    // login
+    // login function
     async onSubmitLogIn(user){
+
+      // Check for the validity of the form (e.g. is it complete?)
       this.$refs[user].validate((valid) => {
         if (valid) {
           this.success = true;
@@ -239,6 +249,9 @@ export default {
       });
 
       if(this.success){
+        // if there are no error, then send the form to the server
+        // the server will return error codes if there is several prohibited actions
+        // e.g. wrong password/email, user doesn't exist
         await this.$axios.post("https://hhelper-server.herokuapp.com/user/signin", {
         // await this.$axios.post("http://localhost:5000/user/signin", {
             firstName:this.ruleForm.firstName,
@@ -247,10 +260,6 @@ export default {
             password: this.ruleForm.password,
             confirmPassword: this.ruleForm.confirmPassword,
           }).then(res => {
-            console.log("status "+res.status);
-            console.log("error: "+res.error);
-            console.log("msg: "+res.json);
-            console.log("data: "+res.data.error);
             if(res.data.error === 404){
               alert('User doesn\'t exist');
             }else if (res.data.error === 403){
@@ -261,24 +270,22 @@ export default {
         })
         //if there are no error
         if(!this.error){
-        // console.log("tes " + res);
-        // console.log("status "+ res.status);
-          // causing error to stop async function
-            await this.$auth.loginWith('local',{
-            data: this.ruleForm
-            });
-            const acc = await this.$axios.post("https://hhelper-server.herokuapp.com/user/user",
-            // const acc = await this.$axios.post("http://localhost:5000/user/user",
-            {
-              firstName: this.ruleForm.firstName,
-              lastName: this.ruleForm.lastName,
-              email: this.ruleForm.email.toLowerCase(),
-              password: this.ruleForm.password,
-              confirmPassword: this.ruleForm.confirmPassword,
-            })
-            // localStorage.setItem('profile', JSON.stringify({acc}));
-            localStorage.setItem('profile', JSON.stringify(acc));
-            this.$router.push('/dashboard')
+          // nuxt login function
+          await this.$auth.loginWith('local',{
+          data: this.ruleForm
+          });
+          const acc = await this.$axios.post("https://hhelper-server.herokuapp.com/user/user",
+          // const acc = await this.$axios.post("http://localhost:5000/user/user",
+          {
+            firstName: this.ruleForm.firstName,
+            lastName: this.ruleForm.lastName,
+            email: this.ruleForm.email.toLowerCase(),
+            password: this.ruleForm.password,
+            confirmPassword: this.ruleForm.confirmPassword,
+          })
+          // localStorage.setItem('profile', JSON.stringify({acc}));
+          localStorage.setItem('profile', JSON.stringify(acc));
+          this.$router.push('/dashboard')
         }
       }
       
@@ -313,15 +320,6 @@ export default {
 .forgot-password {
   margin-top: 10px;
 }
-
-/*.el-button--primary {*/
-/*  background: rgb(0, 124, 137);*/
-/*  border-color: rgb(0, 124, 137);*/
-
-/*}*/
-/*.login .el-input__inner:hover {*/
-/*  border-color: rgb(0, 124, 137);*/
-/*}*/
 .login .el-input__prefix {
   background: rgb(238, 237, 234);
   left: 0;

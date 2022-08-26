@@ -2,9 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import cors from 'cors';
-
 import userRouter from './routes/user.js'
-
 import sessionRouter from "./routes/session.js";
 
 const router = express.Router();
